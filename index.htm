@@ -16,11 +16,11 @@
                     },
                     colors: {
                         ax: {
-                            bg: '#0a0a0a',         // Nero quasi assoluto
-                            surface: '#111111',    // Grigio scuro per card
-                            primary: '#FF4F00',    // ARANCIONE ELETTRICO (Agentrax Orange)
-                            text: '#E0E0E0',       // Bianco sporco per leggibilità
-                            dim: '#444444'         // Grigio per linee
+                            bg: '#0a0a0a',        // Nero quasi assoluto
+                            surface: '#111111',   // Grigio scuro per card
+                            primary: '#FF4F00',   // ARANCIONE ELETTRICO (Agentrax Orange)
+                            text: '#E0E0E0',      // Bianco sporco per leggibilità
+                            dim: '#444444'        // Grigio per linee
                         }
                     },
                     animation: {
@@ -68,6 +68,13 @@
         .input-field:focus {
             box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3);
         }
+
+        /* Stili per il pulsante disabilitato */
+        #submit-button:disabled {
+            background-color: #444444; /* Colore dim */
+            cursor: not-allowed;
+            color: #111111;
+        }
     </style>
 </head>
 <body class="h-screen w-full relative flex flex-col items-center justify-center selection:bg-ax-primary selection:text-black">
@@ -93,22 +100,35 @@
             <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Optimize. Scale.</span>
         </p>
 
-        <form action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full max-w-md mx-auto border border-ax-dim hover:border-ax-primary transition-colors duration-300">
-            <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
-                class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
-            
-            <button type="submit" 
-                class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
-                INITIALIZE >
-            </button>
-        </form>
+        <div id="form-container" class="w-full max-w-md mx-auto">
+            <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                
+                <input type="hidden" name="_subject" value="Nuova Iscrizione AGENTRAX Waitlist">
+                <input type="hidden" name="Project_Description" value="AGENTRAX: The infrastructure layer for Autonomous Agent Fleets. Monitor. Optimize. Scale.">
 
-        <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
-            <input type="checkbox" name="privacy_consent" id="privacy_consent" required class="mr-1 accent-ax-primary">
-            <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
-                Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto la <a href="terms.html" class="underline text-ax-primary hover:text-white">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
-            </label>
+                <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
+                    class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
+                
+                <button type="submit" id="submit-button" disabled
+                    class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
+                    INITIALIZE >
+                </button>
+            </form>
+
+            <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
+                <input type="checkbox" name="privacy_consent" id="privacy_consent" class="mr-1 accent-ax-primary">
+                <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
+                    Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto la <a href="terms.html" class="underline text-ax-primary hover:text-white">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
+                </label>
+            </div>
         </div>
+
+        <div id="success-message" class="hidden max-w-lg p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
+             <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
+             <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
+             <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
+        </div>
+
 
         <p class="mt-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
             Secure Environment // Enterprise Ready
@@ -116,6 +136,63 @@
     </div>
 
     <script>
+        // --- LOGICA FORM ---
+        const consentCheckbox = document.getElementById('privacy_consent');
+        const submitButton = document.getElementById('submit-button');
+        const form = document.getElementById('waitlist-form');
+        const formContainer = document.getElementById('form-container');
+        const successMessage = document.getElementById('success-message');
+
+        // 1. Abilita/Disabilita il pulsante in base alla checkbox
+        consentCheckbox.addEventListener('change', () => {
+            submitButton.disabled = !consentCheckbox.checked;
+        });
+
+        // 2. Gestione invio form con fetch (no reindirizzamento)
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impedisce l'invio tradizionale
+
+            if (!consentCheckbox.checked) {
+                alert("Devi accettare i termini e la privacy policy per iscriverti.");
+                return;
+            }
+
+            const formData = new FormData(form);
+            const actionUrl = form.getAttribute('action');
+
+            // Disabilita il pulsante per prevenire doppi invii
+            submitButton.textContent = 'TRANSMITTING...';
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' // Formspree accetta JSON
+                    }
+                });
+
+                if (response.ok) {
+                    // Successo: nascondi il form e mostra il messaggio di successo
+                    formContainer.classList.add('hidden');
+                    successMessage.classList.remove('hidden');
+                } else {
+                    // Errore: gestisci l'errore (opzionale)
+                    alert('An error occurred during submission. Please try again.');
+                    submitButton.textContent = 'INITIALIZE >';
+                    submitButton.disabled = false;
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('An error occurred during submission. Please check your connection.');
+                submitButton.textContent = 'INITIALIZE >';
+                submitButton.disabled = false;
+            }
+        });
+
+
+        // --- LOGICA CANVAS (Circuito) ---
         const canvas = document.getElementById('circuit-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -130,7 +207,10 @@
 
         // Al click, crea un impulso "quadrato"
         document.addEventListener('mousedown', (e) => {
-            createPulse(e.clientX, e.clientY);
+            // Controlla se il click è avvenuto all'esterno del form, altrimenti non interferire
+            if (!formContainer.contains(e.target)) {
+                createPulse(e.clientX, e.clientY);
+            }
         });
 
         function createPulse(x, y) {
@@ -175,14 +255,14 @@
     </script>
 
     <div class="absolute bottom-0 w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-50">
-    <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
-        <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
-        
-        <div class="space-x-4">
-            <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
-            <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
+        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
+            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
+            
+            <div class="space-x-4">
+                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
+                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>
