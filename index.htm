@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENTRAX | Autoimproving AI Agent Brain </title>
+    <title>AGENTRAX | The AI Agent Infrastructure</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script>
@@ -16,11 +16,11 @@
                     },
                     colors: {
                         ax: {
-                            bg: '#0a0a0a',        
-                            surface: '#111111',   
-                            primary: '#FF4F00',   
-                            text: '#E0E0E0',      
-                            dim: '#444444'       
+                            bg: '#0a0a0a',        // Nero quasi assoluto
+                            surface: '#111111',   // Grigio scuro per card
+                            primary: '#FF4F00',   // ARANCIONE ELETTRICO (Agentrax Orange)
+                            text: '#E0E0E0',      // Bianco sporco per leggibilità
+                            dim: '#444444'        // Grigio per linee
                         }
                     },
                     animation: {
@@ -39,25 +39,30 @@
     <style>
         body { background-color: #0a0a0a; color: #E0E0E0; overflow-x: hidden; }
 
+        /* Effetto Griglia Industriale */
         .grid-bg {
             background-size: 40px 40px;
             background-image:
                 linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            /* Usiamo fixed per la griglia di sfondo in modo che rimanga stabile mentre si scorre */
         }
+
+        /* Effetto Scanline (Monitor Vecchio/Terminale) - Opzionale per tocco Cyber */
         .scanline {
             width: 100%;
             height: 2px;
             background: rgba(255, 79, 0, 0.1);
-            position: absolute;
+            position: fixed; /* Mantenuto fisso per l'effetto */
             z-index: 0;
             animation: scan 6s linear infinite;
             opacity: 0.3;
         }
 
+        /* Canvas per Effetto Circuito */
         #circuit-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
         }
         
@@ -65,82 +70,244 @@
             box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3);
         }
 
+        /* Stili per il pulsante disabilitato */
         #submit-button:disabled {
-            background-color: #444444; 
+            background-color: #444444; /* Colore dim */
             cursor: not-allowed;
             color: #111111;
         }
+
+        /* Contenitore Responsivo per Video (16:9 aspect ratio) */
+        .video-responsive {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            margin-top: 3rem; 
+            border: 2px solid #FF4F00; 
+            box-shadow: 0 0 20px rgba(255, 79, 0, 0.5);
+        }
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
-<body class="h-screen w-full relative flex flex-col items-center justify-center selection:bg-ax-primary selection:text-black">
+<body class="w-full relative flex flex-col items-center selection:bg-ax-primary selection:text-black">
 
     <canvas id="circuit-canvas"></canvas>
     <div class="grid-bg"></div>
     <div class="scanline"></div>
 
-    <div class="z-10 text-center px-6 max-w-5xl flex flex-col items-center">
+    <main class="z-10 w-full max-w-7xl pt-16 pb-32 px-4 md:px-8">
+
+        <section id="hero" class="text-center flex flex-col items-center min-h-screen justify-center pb-20 pt-16">
+            <div class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
+                <span class="w-2 h-2 bg-ax-primary mr-3 animate-pulse"></span>
+                System Status: Operational
+            </div>
+
+            <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
+                AGEN<span class="text-ax-primary">TRAX</span>
+            </h1>
+
+            <p class="text-lg md:text-2xl text-gray-400 mb-12 font-normal max-w-3xl mx-auto leading-relaxed">
+                The infrastructure layer for <span class="text-white font-bold">Autonomous Agent Fleets</span>.
+                <br>
+                <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Optimize. Scale.</span>
+            </p>
+            
+            <a href="#features" class="px-8 py-3 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200">
+                DISCOVER PLATFORM >
+            </a>
+        </section>
+
+        <section id="video" class="py-16 text-center border-t border-b border-ax-dim/50">
+            <h2 class="text-3xl font-mono text-ax-primary mb-4 uppercase tracking-wider">
+                :: MISSION DEBRIEF ::
+            </h2>
+            <p class="text-neutral-400 max-w-xl mx-auto mb-8">
+                Watch the video to understand how Agentrax redefines AI orchestration and fleet management.
+            </p>
+            <div class="w-full max-w-4xl mx-auto px-2">
+                <div class="video-responsive">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&modestbranding=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </section>
         
-        <div class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
-            <span class="w-2 h-2 bg-ax-primary mr-3 animate-pulse"></span>
-            System Status: NON-OPERATIONAL
-        </div>
-
-        <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
-            AGEN<span class="text-ax-primary">TRAX</span>
-        </h1>
-
-        <p class="text-lg md:text-2xl text-gray-400 mb-12 font-normal max-w-3xl mx-auto leading-relaxed">
-            The infrastructure layer for <span class="text-white font-bold">Autonomous Agent Fleets</span>.
-            <br>
-            <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Optimize. Scale.</span>
-        </p>
-
-        <div id="form-container" class="w-full max-w-md mx-auto">
-            <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+        <section id="features" class="py-24">
+            <h2 class="text-5xl font-bold text-center text-white mb-4 uppercase tracking-tight">
+                CORE CAPABILITIES
+            </h2>
+            <p class="text-lg text-ax-primary text-center font-mono mb-16">
+                THE INFRASTRUCTURE YOU NEED TO REACH AGILE AI.
+            </p>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 
-                <input type="hidden" name="_subject" value="Nuova Iscrizione AGENTRAX Waitlist">
-                <input type="hidden" name="Project_Description" value="AGENTRAX: The infrastructure layer for Autonomous Agent Fleets. Monitor. Optimize. Scale.">
-
-                <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
-                    class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
+                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
+                    <p class="text-ax-primary text-4xl mb-3">01</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Fleet Orchestration Hub</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Manage hundreds of agents simultaneously. Define complex workflows and dependencies across diverse LLMs and tools using our declarative configuration language.
+                    </p>
+                </div>
                 
-                <button type="submit" id="submit-button" disabled
-                    class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
-                    INITIALIZE >
-                </button>
-            </form>
+                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
+                    <p class="text-ax-primary text-4xl mb-3">02</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Real-time Telemetry & Logging</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Comprehensive, low-latency logging and monitoring dashboard. Track token usage, latency, success rates, and budget consumption per agent in real-time.
+                    </p>
+                </div>
 
-            <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
-                <input type="checkbox" name="privacy_consent" id="privacy_consent" class="mr-1 accent-ax-primary">
-                <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
-                    Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto i <a href="terms.html" class="underline text-ax-primary hover:text-white">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
-                </label>
+                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
+                    <p class="text-ax-primary text-4xl mb-3">03</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Adaptive Load Balancing</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Dynamically route agent requests to the most efficient LLM or endpoint based on cost, current load, and performance metrics, minimizing operational expenses.
+                    </p>
+                </div>
+
+                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
+                    <p class="text-ax-primary text-4xl mb-3">04</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Secure Tool Sandbox</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Isolate and manage access to external tools (APIs, databases) via a secure sandbox environment, ensuring data integrity and preventing unauthorized actions.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-16 bg-ax-surface/50 p-8 border border-ax-dim text-center">
+                <h3 class="text-2xl font-mono text-ax-primary mb-2 uppercase tracking-wide">Autonomous Self-Healing</h3>
+                <p class="text-neutral-300 max-w-2xl mx-auto">
+                    A built-in recovery mechanism that detects agent failures, attempts auto-correction, or reroutes tasks to maintain 99.99% uptime for mission-critical operations.
+                </p>
+            </div>
+        </section>
+        
+        <section id="architecture" class="py-24 border-t border-ax-dim/50">
+            <h2 class="text-5xl font-bold text-center text-white mb-4 uppercase tracking-tight">
+                ARCHITECTURE BREAKDOWN
+            </h2>
+            <p class="text-lg text-ax-primary text-center font-mono mb-16">
+                BUILT ON ROBUST AND SCALABLE MICROSERVICES.
+            </p>
+            
+            <div class="grid md:grid-cols-3 gap-12 text-center max-w-5xl mx-auto">
+                
+                <div>
+                    <div class="text-5xl text-ax-primary mb-3">📡</div>
+                    <h3 class="text-xl font-bold mb-2">Agent Router</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Gateway for all traffic. Handles rate limiting, authentication, and intelligent routing based on mission parameters and real-time load.
+                    </p>
+                </div>
+                
+                <div>
+                    <div class="text-5xl text-ax-primary mb-3">🧠</div>
+                    <h3 class="text-xl font-bold mb-2">Vector Memory Core</h3>
+                    <p class="text-neutral-400 text-sm">
+                        High-performance Vector Database integration for persistent memory, RAG (Retrieval-Augmented Generation), and long-term context storage.
+                    </p>
+                </div>
+                
+                <div>
+                    <div class="text-5xl text-ax-primary mb-3">📊</div>
+                    <h3 class="text-xl font-bold mb-2">Observability Dataflow</h3>
+                    <p class="text-neutral-400 text-sm">
+                        Dedicated stream processing for metrics and logs. Powers the real-time dashboard and triggers alerts/self-healing protocols.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-20 text-center">
+                <p class="text-neutral-500 font-mono text-sm uppercase">
+                    Supported by all major cloud providers (AWS, GCP, Azure).
+                </p>
+            </div>
+        </section>
+
+
+        <section id="waitlist" class="py-24 text-center border-t border-ax-dim/50">
+            <h2 class="text-5xl font-bold text-center text-ax-primary mb-4 uppercase tracking-tight">
+                ENGAGE DEPLOYMENT
+            </h2>
+            <p class="text-lg text-neutral-300 text-center font-mono mb-16">
+                Join the waitlist to receive priority access to the Agentrax V1.0 Console.
+            </p>
+            
+            <div id="form-container" class="w-full max-w-md mx-auto">
+                <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                    
+                    <input type="hidden" name="_subject" value="Nuova Iscrizione AGENTRAX Waitlist">
+                    <input type="hidden" name="Project_Description" value="AGENTRAX: The infrastructure layer for Autonomous Agent Fleets. Monitor. Optimize. Scale.">
+
+                    <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
+                        class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
+                    
+                    <button type="submit" id="submit-button" disabled
+                        class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
+                        INITIALIZE >
+                    </button>
+                </form>
+
+                <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
+                    <input type="checkbox" name="privacy_consent" id="privacy_consent" class="mr-1 accent-ax-primary">
+                    <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
+                        Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto la <a href="terms.html" class="underline text-ax-primary hover:text-white">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
+                    </label>
+                </div>
+            </div>
+
+            <div id="success-message" class="hidden max-w-lg mx-auto mt-8 p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
+                 <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
+                 <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
+                 <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
+            </div>
+        </section>
+
+    </main>
+    <footer class="w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-50">
+        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
+            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
+            
+            <div class="space-x-4">
+                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
+                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
             </div>
         </div>
+    </footer>
 
-        <div id="success-message" class="hidden max-w-lg p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
-             <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
-             <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
-             <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
-        </div>
-
-
-        <p class="mt-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
-            Secure Environment // Enterprise Ready
-        </p>
-    </div>
 
     <script>
+        // NOTE: Ho cambiato la posizione degli elementi di sfondo (grid-bg, scanline, canvas) da 'absolute' a 'fixed'
+        // in modo che rimangano stabili e non interferiscano visivamente con lo scrolling della pagina.
+        
+        // --- LOGICA FORM ---
         const consentCheckbox = document.getElementById('privacy_consent');
         const submitButton = document.getElementById('submit-button');
         const form = document.getElementById('waitlist-form');
         const formContainer = document.getElementById('form-container');
         const successMessage = document.getElementById('success-message');
 
+        // 1. Abilita/Disabilita il pulsante in base alla checkbox
         consentCheckbox.addEventListener('change', () => {
             submitButton.disabled = !consentCheckbox.checked;
         });
 
+        // 2. Gestione invio form con fetch (no reindirizzamento)
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); 
 
@@ -152,6 +319,7 @@
             const formData = new FormData(form);
             const actionUrl = form.getAttribute('action');
 
+            // Disabilita il pulsante per prevenire doppi invii
             submitButton.textContent = 'TRANSMITTING...';
             submitButton.disabled = true;
 
@@ -181,6 +349,7 @@
         });
 
 
+        // --- LOGICA CANVAS (Circuito) ---
         const canvas = document.getElementById('circuit-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -193,7 +362,9 @@
         window.addEventListener('resize', resize);
         resize();
 
+        // Al click, crea un impulso "quadrato"
         document.addEventListener('mousedown', (e) => {
+            // Controlla se il click è avvenuto all'esterno del form, altrimenti non interferire
             if (!formContainer.contains(e.target)) {
                 createPulse(e.clientX, e.clientY);
             }
@@ -211,23 +382,27 @@
         function draw() {
             ctx.clearRect(0, 0, width, height);
             
+            // Disegna impulsi quadrati (più tech/industriale)
             pulses.forEach((p, index) => {
-                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; 
+                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; // Arancione
                 ctx.lineWidth = 2;
                 ctx.beginPath();
+                // Disegna un quadrato che si espande invece di un cerchio
                 ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
                 ctx.stroke();
 
+                // Linee di connessione "dati" ai 4 lati
                 ctx.beginPath();
-                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); 
-                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); 
-                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); 
-                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); 
+                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); // Su
+                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); // Giù
+                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); // Sinistra
+                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); // Destra
                 ctx.stroke();
                 
                 p.size += p.speed;
                 p.alpha -= 0.015;
 
+                // Rimuovi impulsi finiti
                 if (p.alpha <= 0) pulses.splice(index, 1);
             });
 
@@ -235,16 +410,5 @@
         }
         draw();
     </script>
-
-    <div class="absolute bottom-0 w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-50">
-        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
-            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
-            
-            <div class="space-x-4">
-                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
-                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
