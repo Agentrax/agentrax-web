@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENTRAX | The AI Agent Infrastructure</title>
+    <title>AGENTRAX | Autoimproving AI Agent Brain </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script>
@@ -16,11 +16,11 @@
                     },
                     colors: {
                         ax: {
-                            bg: '#0a0a0a',        // Nero quasi assoluto
-                            surface: '#111111',   // Grigio scuro per card
-                            primary: '#FF4F00',   // ARANCIONE ELETTRICO (Agentrax Orange)
-                            text: '#E0E0E0',      // Bianco sporco per leggibilità
-                            dim: '#444444'        // Grigio per linee
+                            bg: '#0a0a0a',        
+                            surface: '#111111',   
+                            primary: '#FF4F00',   
+                            text: '#E0E0E0',      
+                            dim: '#444444'       
                         }
                     },
                     animation: {
@@ -39,7 +39,6 @@
     <style>
         body { background-color: #0a0a0a; color: #E0E0E0; overflow-x: hidden; }
 
-        /* Effetto Griglia Industriale */
         .grid-bg {
             background-size: 40px 40px;
             background-image:
@@ -47,8 +46,6 @@
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
         }
-
-        /* Effetto Scanline (Monitor Vecchio/Terminale) - Opzionale per tocco Cyber */
         .scanline {
             width: 100%;
             height: 2px;
@@ -59,7 +56,6 @@
             opacity: 0.3;
         }
 
-        /* Canvas per Effetto Circuito */
         #circuit-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
@@ -69,9 +65,8 @@
             box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3);
         }
 
-        /* Stili per il pulsante disabilitato */
         #submit-button:disabled {
-            background-color: #444444; /* Colore dim */
+            background-color: #444444; 
             cursor: not-allowed;
             color: #111111;
         }
@@ -87,7 +82,7 @@
         
         <div class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
             <span class="w-2 h-2 bg-ax-primary mr-3 animate-pulse"></span>
-            System Status: Operational
+            System Status: NON-OPERATIONAL
         </div>
 
         <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
@@ -136,21 +131,18 @@
     </div>
 
     <script>
-        // --- LOGICA FORM ---
         const consentCheckbox = document.getElementById('privacy_consent');
         const submitButton = document.getElementById('submit-button');
         const form = document.getElementById('waitlist-form');
         const formContainer = document.getElementById('form-container');
         const successMessage = document.getElementById('success-message');
 
-        // 1. Abilita/Disabilita il pulsante in base alla checkbox
         consentCheckbox.addEventListener('change', () => {
             submitButton.disabled = !consentCheckbox.checked;
         });
 
-        // 2. Gestione invio form con fetch (no reindirizzamento)
         form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Impedisce l'invio tradizionale
+            e.preventDefault(); 
 
             if (!consentCheckbox.checked) {
                 alert("Devi accettare i termini e la privacy policy per iscriverti.");
@@ -160,7 +152,6 @@
             const formData = new FormData(form);
             const actionUrl = form.getAttribute('action');
 
-            // Disabilita il pulsante per prevenire doppi invii
             submitButton.textContent = 'TRANSMITTING...';
             submitButton.disabled = true;
 
@@ -169,16 +160,14 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'Accept': 'application/json' // Formspree accetta JSON
+                        'Accept': 'application/json' 
                     }
                 });
 
                 if (response.ok) {
-                    // Successo: nascondi il form e mostra il messaggio di successo
                     formContainer.classList.add('hidden');
                     successMessage.classList.remove('hidden');
                 } else {
-                    // Errore: gestisci l'errore (opzionale)
                     alert('An error occurred during submission. Please try again.');
                     submitButton.textContent = 'INITIALIZE >';
                     submitButton.disabled = false;
@@ -192,7 +181,6 @@
         });
 
 
-        // --- LOGICA CANVAS (Circuito) ---
         const canvas = document.getElementById('circuit-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -205,9 +193,7 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Al click, crea un impulso "quadrato"
         document.addEventListener('mousedown', (e) => {
-            // Controlla se il click è avvenuto all'esterno del form, altrimenti non interferire
             if (!formContainer.contains(e.target)) {
                 createPulse(e.clientX, e.clientY);
             }
@@ -225,27 +211,23 @@
         function draw() {
             ctx.clearRect(0, 0, width, height);
             
-            // Disegna impulsi quadrati (più tech/industriale)
             pulses.forEach((p, index) => {
-                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; // Arancione
+                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; 
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                // Disegna un quadrato che si espande invece di un cerchio
                 ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
                 ctx.stroke();
 
-                // Linee di connessione "dati" ai 4 lati
                 ctx.beginPath();
-                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); // Su
-                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); // Giù
-                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); // Sinistra
-                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); // Destra
+                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); 
+                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); 
+                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); 
+                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); 
                 ctx.stroke();
                 
                 p.size += p.speed;
                 p.alpha -= 0.015;
 
-                // Rimuovi impulsi finiti
                 if (p.alpha <= 0) pulses.splice(index, 1);
             });
 
