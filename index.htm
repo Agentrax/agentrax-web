@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTRAX | The AI Agent Infrastructure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        ax: {
+                            bg: '#0a0a0a',         // Nero quasi assoluto
+                            surface: '#111111',    // Grigio scuro per card
+                            primary: '#FF4F00',    // ARANCIONE ELETTRICO (Agentrax Orange)
+                            text: '#E0E0E0',       // Bianco sporco per leggibilità
+                            dim: '#444444'         // Grigio per linee
+                        }
+                    },
+                    animation: {
+                        'scan': 'scan 4s linear infinite',
+                    },
+                    keyframes: {
+                        scan: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0a; color: #E0E0E0; overflow-x: hidden; }
+
+        /* Effetto Griglia Industriale */
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        }
+
+        /* Effetto Scanline (Monitor Vecchio/Terminale) - Opzionale per tocco Cyber */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 79, 0, 0.1);
+            position: absolute;
+            z-index: 0;
+            animation: scan 6s linear infinite;
+            opacity: 0.3;
+        }
+
+        /* Canvas per Effetto Circuito */
+        #circuit-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="h-screen w-full relative flex flex-col items-center justify-center selection:bg-ax-primary selection:text-black">
+
+    <canvas id="circuit-canvas"></canvas>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
+
+    <div class="z-10 text-center px-6 max-w-5xl flex flex-col items-center">
+        
+        <div class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
+            <span class="w-2 h-2 bg-ax-primary mr-3 animate-pulse"></span>
+            System Status: Operational
+        </div>
+
+        <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
+            AGEN<span class="text-ax-primary">TRAX</span>
+        </h1>
+
+        <p class="text-lg md:text-2xl text-gray-400 mb-12 font-normal max-w-3xl mx-auto leading-relaxed">
+            The infrastructure layer for <span class="text-white font-bold">Autonomous Agent Fleets</span>.
+            <br>
+            <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Optimize. Scale.</span>
+        </p>
+
+        <form action="https://formspree.io/f/TUO_CODICE_QUI" method="POST" class="flex flex-col sm:flex-row gap-0 w-full max-w-md mx-auto border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+            <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
+                class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
+            
+            <button type="submit" 
+                class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
+                INITIALIZE >
+            </button>
+        </form>
+
+        <p class="mt-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
+            Secure Environment // Enterprise Ready
+        </p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('circuit-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let pulses = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Al click, crea un impulso "quadrato"
+        document.addEventListener('mousedown', (e) => {
+            createPulse(e.clientX, e.clientY);
+        });
+
+        function createPulse(x, y) {
+            pulses.push({
+                x, y,
+                size: 0,
+                alpha: 1,
+                speed: 2 + Math.random() * 2
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Disegna impulsi quadrati (più tech/industriale)
+            pulses.forEach((p, index) => {
+                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; // Arancione
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                // Disegna un quadrato che si espande invece di un cerchio
+                ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+                ctx.stroke();
+
+                // Linee di connessione "dati" ai 4 lati
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); // Su
+                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); // Giù
+                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); // Sinistra
+                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); // Destra
+                ctx.stroke();
+                
+                p.size += p.speed;
+                p.alpha -= 0.015;
+
+                // Rimuovi impulsi finiti
+                if (p.alpha <= 0) pulses.splice(index, 1);
+            });
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
