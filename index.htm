@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENTRAX | AI Agent Resilience Brain</title>
+    <title>AGENTRAX | AI Agent Resilience</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght==400;700&display=swap" rel="stylesheet">
-    <!-- Icone: Uso Font Awesome come fallback per LinkedIn e X (Twitter), ma mantengo l'SVG di Github. -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ/cnF0pYgsXWl8rF4sXlS+S/7+r/9v4k+z+Xg" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
         tailwind.config = {
@@ -14,7 +13,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Space Grotesk', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        mono: ['JetBrains Mono', 'monospace'], // Il font della mail
                     },
                     colors: {
                         ax: {
@@ -27,17 +26,12 @@
                     },
                     animation: {
                         'scan': 'scan 4s linear infinite',
-                        'loader-anim': 'loader-anim 2s linear infinite', // Animazione Loader
-                        'trail-anim': 'trail-anim 2s linear infinite' // Animazione Logo Trail
+                        'trail-anim': 'trail-anim 2s linear infinite' 
                     },
                     keyframes: {
                         scan: {
                             '0%': { transform: 'translateY(-100%)' },
                             '100%': { transform: 'translateY(100%)' }
-                        },
-                        'loader-anim': {
-                            '0%, 100%': { opacity: 0 },
-                            '50%': { opacity: 1 }
                         },
                         'trail-anim': {
                             '0%': { transform: 'scaleX(0)' },
@@ -70,23 +64,7 @@
             animation: scan 6s linear infinite;
             opacity: 0.3;
         }
-
-        #circuit-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-        }
         
-        /* STILI PULSANTE E INPUTS */
-        .input-field:focus {
-            box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3);
-        }
-
-        #submit-button:disabled {
-            background-color: #444444; 
-            cursor: not-allowed;
-            color: #111111;
-        }
-
         /* Contenitore Responsivo per Video (16:9 aspect ratio) */
         .video-responsive {
             position: relative;
@@ -105,26 +83,26 @@
         }
 
         /* -------------------------------------- */
-        /* STILE LOGO (Uiverse.io by Smit-Prajapati) */
+        /* STILE LOGO (Uiverse.io) */
         /* -------------------------------------- */
         .uiverse-logo-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 150px; /* Altezza per l'effetto */
+            height: 150px; 
             margin-bottom: 2rem;
             position: relative;
         }
 
         .uiverse-logo-card {
-            background: none; /* No sfondo */
+            background: none; 
             height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
-            transform: scale(3.5); /* Ingrandiamo il logo */
+            transform: scale(3.5); 
         }
 
         .uiverse-logo-card .border {
@@ -134,7 +112,7 @@
             border-radius: 5px;
             transform: scale(1.1);
             transition: all 0.3s ease-in-out;
-            opacity: 0; /* Rimosso il bordo per un look più pulito */
+            opacity: 0;
         }
         
         .uiverse-logo-card .content {
@@ -155,7 +133,7 @@
         }
 
         .uiverse-logo-card .logo svg {
-            fill: #E0E0E0; /* Testo light */
+            fill: #E0E0E0; 
             transition: all 0.3s ease-in-out;
         }
 
@@ -164,14 +142,14 @@
             width: 25px;
             margin-right: -2px; 
             margin-top: -1px;
-            fill: #E0E0E0; /* Colore Bianco sporco */
+            fill: #E0E0E0; 
         }
 
         .uiverse-logo-card #logo-second {
             height: 20px;
             width: 60px;
             margin-left: 0; 
-            fill: #FF4F00; /* Colore Agentrax Primary */
+            fill: #FF4F00; 
         }
 
         /* Animazione Trail sotto il logo */
@@ -185,8 +163,11 @@
             animation: trail-anim 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         
+        /* RIMOZIONE TESTI LOGO (per pulizia) */
+        .logo-bottom-text, .bottom-text { display: none !important; }
+
         /* -------------------------------------- */
-        /* STILE INPUT PIXEL (Uiverse.io by xbeat_5120) */
+        /* STILE INPUT PIXEL (Uiverse.io) */
         /* -------------------------------------- */
         .uiverse-pixel-input-wrapper {
             display: flex;
@@ -231,7 +212,7 @@
         }
         
         /* -------------------------------------- */
-        /* STILE BOTTONI SOCIAL (Uiverse.io by SharpTH) */
+        /* STILE BOTTONI SOCIAL (Uiverse.io) */
         /* -------------------------------------- */
         .social-button-container {
             position: fixed;
@@ -274,86 +255,15 @@
             fill: #FF4F00;
         }
         
-        .loader-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 2rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            color: #FF4F00;
-        }
-        .loader-letter {
-            animation: loader-anim 1.5s infinite;
-        }
-        .loader-letter:nth-child(1) { animation-delay: 0s; }
-        .loader-letter:nth-child(2) { animation-delay: 0.1s; }
-        .loader-letter:nth-child(3) { animation-delay: 0.2s; }
-        .loader-letter:nth-child(4) { animation-delay: 0.3s; }
-        .loader-letter:nth-child(5) { animation-delay: 0.4s; }
-        .loader-letter:nth-child(6) { animation-delay: 0.5s; }
-        .loader-letter:nth-child(7) { animation-delay: 0.6s; }
-        .loader-letter:nth-child(8) { animation-delay: 0.7s; }
-        .loader-letter:nth-child(9) { animation-delay: 0.8s; }
-        .loader-letter:nth-child(10) { animation-delay: 0.9s; }
-        .loader {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #FF4F00;
-            margin-left: 10px;
-            animation: loader-anim 1.5s infinite;
-        }
-        */
-
-        .loader-card {
-            background-color: #111111;
-            padding: 2rem;
-            border: 1px solid #444444;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .loader-card .loader p {
-            font-size: 1.5rem;
-            color: #FF4F00;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 0.5rem;
-        }
-        .loader-card .words {
-            overflow: hidden;
-            height: 1.5rem;
-        }
-        .loader-card .word {
-            display: block;
-            height: 100%;
-            color: #E0E0E0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            text-transform: uppercase;
-            animation: word-switch 4s infinite;
-        }
-        @keyframes word-switch {
-            0% { transform: translateY(0); }
-            20% { transform: translateY(-100%); }
-            40% { transform: translateY(-200%); }
-            60% { transform: translateY(-300%); }
-            80% { transform: translateY(-400%); }
-            100% { transform: translateY(-500%); }
-        }
-        */
     </style>
 </head>
 <body class="w-full relative flex flex-col items-center selection:bg-ax-primary selection:text-black">
 
-    <canvas id="circuit-canvas"></canvas>
     <div class="grid-bg"></div>
     <div class="scanline"></div>
 
-    <!-- SOCIAL LINKS (FISSI IN ALTO A DESTRA) -->
     <div class="social-button-container">
         
-        <!-- GITHUB -->
         <a href="#github-link" class="btn-cssbuttons group">
             <span class="text-ax-primary group-hover:text-white transition-colors duration-300">GitHub</span>
             <span>
@@ -363,7 +273,6 @@
             </span>
         </a>
 
-        <!-- LINKEDIN (Uso FontAwesome per semplicità) -->
         <a href="#linkedin-link" class="btn-cssbuttons group">
             <span class="text-ax-primary group-hover:text-white transition-colors duration-300">LinkedIn</span>
             <span>
@@ -371,7 +280,6 @@
             </span>
         </a>
 
-        <!-- X (Twitter) (Uso FontAwesome per semplicità) -->
         <a href="#x-link" class="btn-cssbuttons group">
             <span class="text-ax-primary group-hover:text-white transition-colors duration-300">X / Twitter</span>
             <span>
@@ -381,17 +289,10 @@
     </div>
 
 
-    <!-- MAIN CONTENT CONTAINER -->
     <main class="z-10 w-full max-w-7xl pt-16 pb-32 px-4 md:px-8">
 
-        <!-- 1. HERO SECTION -->
         <section id="hero" class="text-center flex flex-col items-center min-h-screen justify-center pb-20 pt-16">
-            <div class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
-                <span class="w-2 h-2 bg-ax-primary mr-3 animate-pulse"></span>
-                System Status: Operational
-            </div>
 
-            <!-- LOGO SVG (Uiverse.io by Smit-Prajapati) -->
             <div class="uiverse-logo-container">
                 <div class="uiverse-logo-card">
                     <div class="border"></div>
@@ -420,30 +321,30 @@
                     </div>
                 </div>
             </div>
-            <!-- FINE LOGO SVG -->
+            <h1 class="text-4xl md:text-6xl font-sans font-bold text-white mb-6 uppercase tracking-tight">
+                THE AI AGENT INFRASTRUCTURE
+            </h1>
 
             <p class="text-lg md:text-2xl text-gray-400 mb-12 font-normal max-w-3xl mx-auto leading-relaxed">
-                The infrastructure layer for <span class="text-white font-bold">Autonomous Agent Fleets</span>.
+                L'infrastruttura di base per le <span class="text-white font-bold">Flotte di Agenti Autonomi</span>.
                 <br>
-                <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Optimize. Scale.</span>
+                <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Ottimizza. Scala.</span>
             </p>
             
             <a href="#features" class="px-8 py-3 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200">
-                DISCOVER PLATFORM >
+                SCOPRI LA PIATTAFORMA >
             </a>
         </section>
 
-        <!-- 2. VIDEO PRESENTATION SECTION -->
         <section id="video" class="py-16 text-center border-t border-b border-ax-dim/50">
             <h2 class="text-3xl font-mono text-ax-primary mb-4 uppercase tracking-wider">
                 :: MISSION DEBRIEF ::
             </h2>
             <p class="text-neutral-400 max-w-xl mx-auto mb-8">
-                Watch the video to understand how Agentrax redefines AI orchestration and fleet management.
+                Guarda il video per capire come Agentrax ridefinisce l'orchestrazione AI e la gestione delle flotte di agenti.
             </p>
             <div class="w-full max-w-4xl mx-auto px-2">
                 <div class="video-responsive">
-                    <!-- SOSTITUISCI QUESTO IFRAME CON IL CODICE EMBED DEL TUO VIDEO YOUTUBE -->
                     <iframe 
                         width="100%" 
                         height="100%" 
@@ -456,324 +357,82 @@
             </div>
         </section>
         
-        <!-- 3. FEATURES SECTION (Le Funzionalità) -->
         <section id="features" class="py-24">
             <h2 class="text-5xl font-bold text-center text-white mb-4 uppercase tracking-tight">
                 CORE CAPABILITIES
             </h2>
             <p class="text-lg text-ax-primary text-center font-mono mb-16">
-                THE INFRASTRUCTURE YOU NEED TO REACH AGILE AI.
+                L'INFRASTRUTTURA NECESSARIA PER L'AI AGILE.
             </p>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 
-                <!-- FEATURE 1: Orchestration Hub -->
                 <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3">01</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Fleet Orchestration Hub</h3>
+                    <p class="text-ax-primary text-4xl mb-3 font-mono">01</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Orchestrazione di Flotta</h3>
                     <p class="text-neutral-400 text-sm">
-                        Manage hundreds of agents simultaneously. Define complex workflows and dependencies across diverse LLMs and tools using our declarative configuration language.
+                        Gestisci centinaia di agenti contemporaneamente. Definisci flussi di lavoro complessi e dipendenze tra diversi LLM e strumenti utilizzando il nostro linguaggio di configurazione dichiarativo.
                     </p>
                 </div>
                 
-                <!-- FEATURE 2: Real-time Monitoring -->
                 <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3">02</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Real-time Telemetry & Logging</h3>
+                    <p class="text-ax-primary text-4xl mb-3 font-mono">02</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Telemetria in Tempo Reale</h3>
                     <p class="text-neutral-400 text-sm">
-                        Comprehensive, low-latency logging and monitoring dashboard. Track token usage, latency, success rates, and budget consumption per agent in real-time.
+                        Dashboard di logging e monitoraggio completa e a bassa latenza. Traccia l'uso dei token, la latenza, i tassi di successo e il consumo di budget per agente in tempo reale.
                     </p>
                 </div>
 
-                <!-- FEATURE 3: Adaptive Load Balancing -->
                 <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3">03</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Adaptive Load Balancing</h3>
+                    <p class="text-ax-primary text-4xl mb-3 font-mono">03</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Load Balancing Adattivo</h3>
                     <p class="text-neutral-400 text-sm">
-                        Dynamically route agent requests to the most efficient LLM or endpoint based on cost, current load, and performance metrics, minimizing operational expenses.
+                        Instrada dinamicamente le richieste degli agenti all'LLM o endpoint più efficiente in base a costo, carico attuale e metriche di performance, riducendo le spese operative.
                     </p>
                 </div>
 
-                <!-- FEATURE 4: Secure Tool Integration -->
                 <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3">04</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider">Secure Tool Sandbox</h3>
+                    <p class="text-ax-primary text-4xl mb-3 font-mono">04</p>
+                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Integrazione Strumenti Sicura</h3>
                     <p class="text-neutral-400 text-sm">
-                        Isolate and manage access to external tools (APIs, databases) via a secure sandbox environment, ensuring data integrity and preventing unauthorized actions.
+                        Permetti ai tuoi agenti di interagire con API e sistemi esterni tramite un gateway sicuro. Gestione granulare dei permessi per prevenire usi non autorizzati e garantire la compliance.
                     </p>
                 </div>
-            </div>
-            
-            <!-- FEATURE 5 (più ampio/come riepilogo) -->
-            <div class="mt-16 bg-ax-surface/50 p-8 border border-ax-dim text-center">
-                <h3 class="text-2xl font-mono text-ax-primary mb-2 uppercase tracking-wide">Autonomous Self-Healing</h3>
-                <p class="text-neutral-300 max-w-2xl mx-auto">
-                    A built-in recovery mechanism that detects agent failures, attempts auto-correction, or reroutes tasks to maintain 99.99% uptime for mission-critical operations.
-                </p>
-            </div>
-        </section>
-        
-        <!-- 4. TECHNICAL ARCHITECTURE SECTION (Dettagli Tecnici) -->
-        <section id="architecture" class="py-24 border-t border-ax-dim/50">
-            <h2 class="text-5xl font-bold text-center text-white mb-4 uppercase tracking-tight">
-                ARCHITECTURE BREAKDOWN
-            </h2>
-            <p class="text-lg text-ax-primary text-center font-mono mb-16">
-                BUILT ON ROBUST AND SCALABLE MICROSERVICES.
-            </p>
-            
-            <div class="grid md:grid-cols-3 gap-12 text-center max-w-5xl mx-auto">
-                
-                <!-- Componente 1: Router -->
-                <div>
-                    <div class="text-5xl text-ax-primary mb-3">📡</div>
-                    <h3 class="text-xl font-bold mb-2">Agent Router</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Gateway for all traffic. Handles rate limiting, authentication, and intelligent routing based on mission parameters and real-time load.
-                    </p>
-                </div>
-                
-                <!-- Componente 2: Memory -->
-                <div>
-                    <div class="text-5xl text-ax-primary mb-3">🧠</div>
-                    <h3 class="text-xl font-bold mb-2">Vector Memory Core</h3>
-                    <p class="text-neutral-400 text-sm">
-                        High-performance Vector Database integration for persistent memory, RAG (Retrieval-Augmented Generation), and long-term context storage.
-                    </p>
-                </div>
-                
-                <!-- Componente 3: Dataflow -->
-                <div>
-                    <div class="text-5xl text-ax-primary mb-3">📊</div>
-                    <h3 class="text-xl font-bold mb-2">Observability Dataflow</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Dedicated stream processing for metrics and logs. Powers the real-time dashboard and triggers alerts/self-healing protocols.
-                    </p>
-                </div>
-            </div>
-
-            
-            <div class="loader-wrapper">
-                <span class="loader-letter">L</span>
-                <span class="loader-letter">O</span>
-                <span class="loader-letter">A</span>
-                <span class="loader-letter">D</span>
-                <span class="loader-letter">I</span>
-                <span class="loader-letter">N</span>
-                <span class="loader-letter">G</span>
-                <div class="loader"></div>
-            </div>
-            -->
-
-         
-            <div class="loader-card max-w-sm mx-auto mt-8">
-                <div class="loader">
-                    <p>SYSTEM INITIALIZING</p>
-                    <div class="words">
-                        <span class="word">modules</span>
-                        <span class="word">agents</span>
-                        <span class="word">routing</span>
-                        <span class="word">telemetry</span>
-                        <span class="word">modules</span>
-                    </div>
-                </div>
-            </div>
-            -->
-            
-            <div class="mt-20 text-center">
-                <p class="text-neutral-500 font-mono text-sm uppercase">
-                    Supported by all major cloud providers (AWS, GCP, Azure).
-                </p>
             </div>
         </section>
 
-
-        <!-- 5. CALL TO ACTION (WAITLIST) SECTION -->
-        <section id="waitlist" class="py-24 text-center border-t border-ax-dim/50">
-            <h2 class="text-5xl font-bold text-center text-ax-primary mb-4 uppercase tracking-tight">
-                ENGAGE DEPLOYMENT
+        <section id="signup" class="py-24 text-center max-w-2xl mx-auto border-t border-ax-dim/50">
+            <h2 class="text-4xl font-bold text-white mb-2 uppercase tracking-tight">
+                GET EARLY ACCESS
             </h2>
-            <p class="text-lg text-neutral-300 text-center font-mono mb-16">
-                Join the waitlist to receive priority access to the Agentrax V1.0 Console.
+            <p class="text-lg text-ax-primary text-center font-mono mb-8">
+                REGISTRATI PER GLI AGGIORNAMENTI ALPHA.
             </p>
-            
-            <!-- Contenitore del form e messaggio di successo -->
-            <div id="form-container" class="w-full max-w-md mx-auto">
-                <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim transition-colors duration-300">
-                    
-                    <!-- Campi nascosti per l'email -->
-                    <input type="hidden" name="_subject" value="Nuova Iscrizione AGENTRAX Waitlist">
-                    <input type="hidden" name="Project_Description" value="AGENTRAX: The infrastructure layer for Autonomous Agent Fleets. Monitor. Optimize. Scale.">
 
-                    <!-- INPUT MODIFICATO (Uiverse.io by xbeat_5120) -->
-                    <div class="uiverse-pixel-input-wrapper w-full">
-                        <label class="uiverse-pixel-label" for="email-input">WORK EMAIL</label>
-                        <input
-                            placeholder="Enter work email..."
-                            class="uiverse-pixel-input"
-                            id="email-input"
-                            name="email"
-                            type="email"
-                            required
-                        />
-                    </div>
-                    <!-- FINE INPUT MODIFICATO -->
+            <form class="flex flex-col gap-6 items-center">
+                <div class="uiverse-pixel-input-wrapper w-full max-w-md">
+                    <label class="uiverse-pixel-label" for="email">:: ENTER SECURE EMAIL</label>
+                    <input type="email" id="email" class="uiverse-pixel-input w-full" placeholder="access.token@agentrax.ai" required>
+                </div>
 
-                    <button type="submit" id="submit-button" disabled
-                        class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap mt-4 sm:mt-0 sm:border-t-0 sm:border-l border-ax-dim">
-                        INITIALIZE >
-                    </button>
-                </form>
-
-                <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
-                    <input type="checkbox" name="privacy_consent" id="privacy_consent" class="mr-1 accent-ax-primary">
-                    <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
-                       I agree to the processing of data to receive updates and I have read the <a href="terms.html" class="underline text-ax-primary hover:text-white">Terms</a> and the <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
+                <div class="flex items-start max-w-md w-full mt-2 text-left">
+                    <input type="checkbox" id="terms-check" class="mr-2 mt-1 accent-ax-primary" required>
+                    <label for="terms-check" class="text-sm text-neutral-400">
+                        Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto la <a href="terms.html" class="underline text-ax-primary hover:text-white transition-colors">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white transition-colors">Privacy Policy.</a>
                     </label>
                 </div>
-            </div>
 
-            <!-- Messaggio di Successo (nascosto inizialmente) -->
-            <div id="success-message" class="hidden max-w-lg mx-auto mt-8 p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
-                 <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
-                 <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
-                 <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
-            </div>
+                <button type="submit" class="w-full max-w-md px-8 py-3 bg-ax-primary text-black font-bold font-mono text-base uppercase hover:bg-white transition-all duration-200 mt-4">
+                    REQUEST ACCESS
+                </button>
+            </form>
         </section>
 
     </main>
-    <!-- END MAIN CONTENT CONTAINER -->
 
-
-    <!-- FOOTER SECTION -->
-    <footer class="w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-50">
-        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
-            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
-            
-            <div class="space-x-4">
-                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
-                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
-            </div>
-        </div>
+    <footer class="w-full border-t border-ax-dim/50 py-8 text-center">
+        <p class="text-sm text-neutral-500 font-mono">AGENTRAX &copy; 2024 | All Rights Reserved. | <span class="text-ax-primary">AI Infrastructure, Not AI Service.</span></p>
     </footer>
 
-
-    <script>
-        // --- LOGICA FORM ---
-        const consentCheckbox = document.getElementById('privacy_consent');
-        const submitButton = document.getElementById('submit-button');
-        const form = document.getElementById('waitlist-form');
-        const formContainer = document.getElementById('form-container');
-        const successMessage = document.getElementById('success-message');
-
-        // 1. Abilita/Disabilita il pulsante in base alla checkbox
-        consentCheckbox.addEventListener('change', () => {
-            submitButton.disabled = !consentCheckbox.checked;
-        });
-
-        // 2. Gestione invio form con fetch (no reindirizzamento)
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-
-            if (!consentCheckbox.checked) {
-                // Sostituisci alert con un messaggio UI custom se necessario
-                console.error("Consent required.");
-                return;
-            }
-
-            const formData = new FormData(form);
-            const actionUrl = form.getAttribute('action');
-
-            // Disabilita il pulsante per prevenire doppi invii
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'TRANSMITTING...';
-            submitButton.disabled = true;
-
-            try {
-                const response = await fetch(actionUrl, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json' 
-                    }
-                });
-
-                if (response.ok) {
-                    formContainer.classList.add('hidden');
-                    successMessage.classList.remove('hidden');
-                } else {
-                    console.error('Submission error:', response.status);
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                }
-            } catch (error) {
-                console.error('Submission error:', error);
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
-        });
-
-
-        // --- LOGICA CANVAS (Circuito) ---
-        const canvas = document.getElementById('circuit-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let pulses = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Al click, crea un impulso "quadrato"
-        document.addEventListener('mousedown', (e) => {
-            // Controlla se il click è avvenuto all'esterno del form
-            if (formContainer && !formContainer.contains(e.target)) {
-                createPulse(e.clientX, e.clientY);
-            }
-        });
-
-        function createPulse(x, y) {
-            pulses.push({
-                x, y,
-                size: 0,
-                alpha: 1,
-                speed: 2 + Math.random() * 2
-            });
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, width, height);
-            
-            // Disegna impulsi quadrati (più tech/industriale)
-            pulses.forEach((p, index) => {
-                ctx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`; // Arancione
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                // Disegna un quadrato che si espande invece di un cerchio
-                ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-                ctx.stroke();
-
-                // Linee di connessione "dati" ai 4 lati
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y - p.size/2); ctx.lineTo(p.x, p.y - p.size/2 - 20); // Su
-                ctx.moveTo(p.x, p.y + p.size/2); ctx.lineTo(p.x, p.y + p.size/2 + 20); // Giù
-                ctx.moveTo(p.x - p.size/2, p.y); ctx.lineTo(p.x - p.size/2 - 20, p.y); // Sinistra
-                ctx.moveTo(p.x + p.size/2, p.y); ctx.lineTo(p.x + p.size/2 + 20, p.y); // Destra
-                ctx.stroke();
-                
-                p.size += p.speed;
-                p.alpha -= 0.015;
-
-                // Rimuovi impulsi finiti
-                if (p.alpha <= 0) pulses.splice(index, 1);
-            });
-
-            requestAnimationFrame(draw);
-        }
-        draw();
-    </script>
 </body>
 </html>
