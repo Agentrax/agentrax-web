@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTRAX | Mission Brief</title> 
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['JetBrains Mono', 'monospace'], 
+                        title: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        ax: {
+                            bg: '#050505',
+                            surface: '#0F0F0F',
+                            primary: '#FF4F00',
+                            dim: '#333333',
+                            text: '#E0E0E0'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 5px rgba(255, 79, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 20px rgba(255, 79, 0, 0.5)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050505; color: #E0E0E0; overflow-x: hidden; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF4F00; }
+
+        /* Background Layers */
+        .canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #matrix-canvas { z-index: -10; opacity: 0.15; }
+        #circuit-canvas { z-index: -9; opacity: 0.4; }
+        .grid-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -8; pointer-events: none;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* Typography Utilities */
+        .prose-ax p { margin-bottom: 1.5rem; line-height: 1.8; font-weight: 300; color: #a3a3a3; }
+        .prose-ax strong { color: white; font-weight: 700; }
+        .highlight { color: #FF4F00; }
+
+        /* --- GRADUAL BLUR CSS (RICHIESTO) --- */
+        .gradual-blur-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gradual-blur-inner > div {
+            -webkit-backdrop-filter: inherit;
+            backdrop-filter: inherit;
+            position: absolute; inset: 0; /* Aggiunto per posizionamento corretto layer */
+        }
+
+        .gradual-blur {
+            isolation: isolate;
+            width: 100%; height: 100%;
+        }
+
+        @supports not (backdrop-filter: blur(1px)) {
+            .gradual-blur-inner > div {
+                background: rgba(0, 0, 0, 0.3);
+                opacity: 0.5;
+            }
+        }
+
+        /* --- MODIFICA QUI --- */
+        .gradual-blur-fixed {
+            position: fixed !important;
+            top: 90%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1000;
+            
+            
+        }
+    </style>
+</head>
+<body class="selection:bg-ax-primary selection:text-black antialiased">
+
+    <canvas id="matrix-canvas" class="canvas-layer"></canvas>
+    <canvas id="circuit-canvas" class="canvas-layer"></canvas>
+    <div class="grid-bg"></div>
+
+    <div class="gradual-blur-fixed">
+        <div class="gradual-blur">
+            <div class="gradual-blur-inner">
+                <div style="backdrop-filter: blur(0.5px); -webkit-mask: linear-gradient(to bottom, transparent 0%, black 12.5%); mask: linear-gradient(to bottom, transparent 0%, black 12.5%);"></div>
+                <div style="backdrop-filter: blur(1px); -webkit-mask: linear-gradient(to bottom, transparent 12.5%, black 25%); mask: linear-gradient(to bottom, transparent 12.5%, black 25%);"></div>
+                <div style="backdrop-filter: blur(2px); -webkit-mask: linear-gradient(to bottom, transparent 25%, black 37.5%); mask: linear-gradient(to bottom, transparent 25%, black 37.5%);"></div>
+                <div style="backdrop-filter: blur(4px); -webkit-mask: linear-gradient(to bottom, transparent 37.5%, black 50%); mask: linear-gradient(to bottom, transparent 37.5%, black 50%);"></div>
+                <div style="backdrop-filter: blur(8px); -webkit-mask: linear-gradient(to bottom, transparent 50%, black 62.5%); mask: linear-gradient(to bottom, transparent 50%, black 62.5%);"></div>
+                <div style="backdrop-filter: blur(16px); -webkit-mask: linear-gradient(to bottom, transparent 62.5%, black 75%); mask: linear-gradient(to bottom, transparent 62.5%, black 75%);"></div>
+                <div style="backdrop-filter: blur(32px); -webkit-mask: linear-gradient(to bottom, transparent 75%, black 87.5%); mask: linear-gradient(to bottom, transparent 75%, black 87.5%);"></div>
+                <div style="backdrop-filter: blur(64px); -webkit-mask: linear-gradient(to bottom, transparent 87.5%, black 100%); mask: linear-gradient(to bottom, transparent 87.5%, black 100%);"></div>
+            </div>
+        </div>
+    </div>
+
+    <a href="index.html" class="fixed top-6 left-6 md:top-12 md:left-12 z-50 text-ax-primary hover:text-white font-mono text-sm transition-colors group flex items-center gap-2 bg-black/50 px-4 py-2 rounded border border-ax-dim backdrop-blur-sm">
+        <span>&lt;</span> <span class="group-hover:underline">RETURN TO TERMINAL</span>
+    </a>
+
+    <main class="relative z-10 max-w-4xl mx-auto pt-32 pb-24 px-6">
+        
+        <div data-aos="fade-down" class="border-b border-ax-dim pb-8 mb-12">
+            <div class="text-ax-primary font-mono text-xs mb-2 tracking-[0.3em]">CLASSIFIED // PROJECT BRIEF</div>
+            <h1 class="font-title text-5xl md:text-7xl text-white font-bold mb-6">THE STARK <span class="text-ax-primary">TRUTH</span></h1>
+            <p class="text-neutral-400 font-mono text-sm max-w-2xl">
+                Why we built this infrastructure, and why your current setup is doomed to fail.
+            </p>
+        </div>
+
+        <div class="prose-ax text-lg md:text-xl">
+            
+            <div data-aos="fade-up" class="mb-16">
+                <h2 class="text-2xl text-white font-title font-bold mb-6 border-l-4 border-ax-primary pl-4">01 / THE ENTROPY PROBLEM</h2>
+                <p>
+                    Let’s be brutally honest. Everyone is selling you "magic." They promise autonomous agents that will run your company while you sleep. But the reality? <strong class="highlight">It’s brittle code wrapped in expensive hype.</strong>
+                </p>
+                <p>
+                    You deploy an agent. It works on Tuesday. By Thursday, an API schema changes, a model drifts, or it hallucinates a variable that doesn't exist. The agent crashes. Your workflow dies. You burn money debugging a system that was supposed to save you time. It’s not automation; it’s just high-tech babysitting.
+                </p>
+            </div>
+
+            <div data-aos="fade-up" class="mb-16">
+                <h2 class="text-2xl text-white font-title font-bold mb-6 border-l-4 border-ax-primary pl-4">02 / THE ADULT IN THE ROOM</h2>
+                <p>
+                    We didn't build AGENTRAX to be another "agent builder." There are enough of those toys. We built <strong class="text-white">the nervous system</strong> that keeps them alive.
+                </p>
+                <p>
+                    Think of us as the operational layer. When your LLM goes rogue, we catch it. When context windows get too expensive, we compress them dynamically. We are the cynical layer of logic that assumes everything will break—and fixes it before you even get the notification.
+                </p>
+                <p>
+                    We treat agents like disposable workers in a hive mind. If one fails, the collective learns. The error is patched. The swarm continues. <strong class="highlight">This is resilience, not magic.</strong>
+                </p>
+            </div>
+
+            <div data-aos="fade-up" class="mb-16">
+                <h2 class="text-2xl text-white font-title font-bold mb-6 border-l-4 border-ax-primary pl-4">03 / THE ENDGAME</h2>
+                <p>
+                    Our roadmap is aggressive. We are moving towards fully codeless orchestration where the infrastructure itself suggests optimizations. We are building the standard protocol for agent-to-agent communication.
+                </p>
+                <p>
+                    Stop building on sand. Build on concrete.
+                </p>
+            </div>
+
+            <div data-aos="zoom-in" class="mt-24">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-ax-primary to-purple-900 rounded-lg blur opacity-20 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-ax-surface border border-ax-dim p-8 md:p-12 rounded-xl text-center">
+                        <h3 class="text-xl text-white font-mono mb-4 uppercase tracking-widest">Initiate Communication</h3>
+                        <p class="text-neutral-500 text-sm mb-8 font-light">
+                            For enterprise integration, technical partnerships, or to simply argue about AGI.
+                        </p>
+                        
+                        <a href="mailto:company@agentrax.tech" class="inline-block bg-ax-primary text-black font-bold font-mono px-8 py-4 text-lg hover:bg-white transition-colors uppercase tracking-tight">
+                            company@agentrax.tech
+                        </a>
+                        
+                        <p class="mt-6 text-[10px] text-neutral-600 font-mono">ENCRYPTED CHANNEL // OPEN</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        const mCanvas = document.getElementById('matrix-canvas');
+        const mCtx = mCanvas.getContext('2d');
+        const cCanvas = document.getElementById('circuit-canvas');
+        const cCtx = cCanvas.getContext('2d');
+        
+        let w, h;
+        let mCols = [];
+        const mSize = 16;
+        const mChars = "01XY";
+        let circuits = [];
+
+        function resize() {
+            w = window.innerWidth; h = window.innerHeight;
+            mCanvas.width = cCanvas.width = w;
+            mCanvas.height = cCanvas.height = h;
+            mCols = Array(Math.floor(w / mSize)).fill(1);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        document.addEventListener('mousedown', (e) => {
+            circuits.push({x: e.clientX, y: e.clientY, r: 0, a: 1});
+        });
+
+        function animate() {
+            mCtx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+            mCtx.fillRect(0, 0, w, h);
+            mCtx.font = '14px monospace';
+            
+            mCols.forEach((y, i) => {
+                const char = mChars[Math.floor(Math.random() * mChars.length)];
+                mCtx.fillStyle = (Math.random() > 0.95) ? '#FF4F00' : '#333';
+                mCtx.fillText(char, i * mSize, y * mSize);
+                if (y * mSize > h && Math.random() > 0.98) mCols[i] = 0;
+                mCols[i]++;
+            });
+
+            cCtx.clearRect(0, 0, w, h);
+            
+            if(Math.random() > 0.96) {
+                 circuits.push({x: Math.random()*w, y: Math.random()*h, r: 0, a: 0.5});
+            }
+
+            circuits.forEach((c, i) => {
+                cCtx.beginPath();
+                cCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+                cCtx.strokeStyle = `rgba(255, 79, 0, ${c.a})`;
+                cCtx.lineWidth = 2;
+                cCtx.stroke();
+                
+                cCtx.beginPath();
+                cCtx.moveTo(c.x - c.r, c.y); cCtx.lineTo(c.x + c.r, c.y);
+                cCtx.moveTo(c.x, c.y - c.r); cCtx.lineTo(c.x, c.y + c.r);
+                cCtx.strokeStyle = `rgba(255, 79, 0, ${c.a * 0.5})`;
+                cCtx.stroke();
+
+                c.r += 1; 
+                c.a -= 0.01; 
+                
+                if (c.a <= 0) circuits.splice(i, 1);
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
