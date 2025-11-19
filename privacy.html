@@ -2,29 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Privacy Policy | Agentrax</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTRAX | Privacy Protocol</title> 
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>body { background-color: #0a0a0a; color: #E0E0E0; font-family: Inter, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.6; } h2 { color: #FF4F00; font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; } p { margin-bottom: 1rem; } ul { list-style: disc; margin-left: 1.5rem; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['JetBrains Mono', 'monospace'], 
+                        title: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        ax: { bg: '#050505', surface: '#0F0F0F', primary: '#FF4F00', dim: '#333333', text: '#E0E0E0' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #E0E0E0; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        
+        /* Backgrounds */
+        .canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #matrix-canvas { z-index: -10; opacity: 0.15; }
+        #circuit-canvas { z-index: -9; opacity: 0.4; }
+        .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -8; pointer-events: none; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle at center, black 40%, transparent 100%); }
+
+        /* Legal Typography */
+        h2 { color: white; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; border-left: 3px solid #FF4F00; padding-left: 1rem; }
+        h3 { color: #FF4F00; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        p, li { color: #a3a3a3; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; }
+        ul { list-style-type: disc; margin-left: 1.5rem; color: #FF4F00; }
+        ul span { color: #a3a3a3; }
+        a { color: #FF4F00; text-decoration: underline; transition: color 0.2s; }
+        a:hover { color: white; }
+    </style>
 </head>
-<body>
-    <h2>Privacy Policy (Informativa Breve)</h2>
+<body class="p-6 md:p-12">
 
-    <p><strong>Titolare del Trattamento:</strong> Agentrax, contactabile all'indirizzo email: company@agentrax.tech</p>
+    <canvas id="matrix-canvas" class="canvas-layer"></canvas>
+    <canvas id="circuit-canvas" class="canvas-layer"></canvas>
+    <div class="grid-bg"></div>
 
-    <h3>1. Dati Trattati e Finalità</h3>
-    <p>Raccogliamo il tuo **Indirizzo Email** quando ti iscrivi alla nostra lista d'attesa (waitlist).</p>
-    <ul>
-        <li><strong>Finalità:</strong> Invio di comunicazioni relative allo sviluppo del prodotto (Soft Launch), aggiornamenti sulla roadmap e inviti al programma Beta.</li>
-        <li><strong>Base Giuridica:</strong> Il tuo **consenso esplicito** (Art. 6, par. 1, lett. a del GDPR).</li>
-    </ul>
+    <a href="index.html" class="fixed top-6 left-6 z-50 text-ax-primary hover:text-white font-mono text-sm transition-colors no-underline border border-ax-dim px-3 py-1 bg-black/50 backdrop-blur">
+        &lt; RETURN TO TERMINAL
+    </a>
 
-    <h3>2. I Tuoi Diritti</h3>
-    <p>Hai il diritto di chiedere la cancellazione o la modifica dei dati, così come di opporti al trattamento, in qualsiasi momento. Puoi esercitare tali diritti inviando una comunicazione all'indirizzo email del Titolare.</p>
-    <p>La tua email sarà conservata fino alla tua richiesta di cancellazione o fino a quando il servizio non verrà ritenuto non più attivo.</p>
+    <main class="max-w-3xl mx-auto mt-24 mb-24 bg-black/40 p-8 md:p-12 border border-ax-dim backdrop-blur-sm rounded-xl">
+        
+        <h1 class="text-4xl md:text-6xl font-title font-bold text-white mb-2">PRIVACY <span class="text-ax-primary">POLICY</span></h1>
+        <p class="font-mono text-xs text-neutral-500 mb-12 border-b border-ax-dim pb-8">LAST UPDATED: NOVEMBER 18, 2025 // STATUS: ENFORCED</p>
 
-    <div style="margin-top: 50px; border-top: 1px solid #333; padding-top: 10px;">
-        <p style="font-size: 0.8rem;">Ultimo aggiornamento: 18 / 11 / 2025</p>
-    </div>
+        <div class="font-sans">
+            <p>This Privacy Policy describes how AGENTRAX ("we", "us", or "our") collects, uses, and discloses your information when you use our website. We operate as infrastructure, not data brokers. We believe in data minimization.</p>
+
+            <h2>1. DATA CONTROLLER</h2>
+            <p>The entity responsible for the processing of your data is <strong>Agentrax</strong>.<br>
+            For any privacy-related inquiries or to exercise your rights, initiate a handshake at: <a href="mailto:company@agentrax.tech">company@agentrax.tech</a>.</p>
+
+            <h2>2. DATA WE COLLECT</h2>
+            <p>We currently collect minimal data necessary for the operation of our Waitlist and communication channels:</p>
+            <ul>
+                <li><span><strong>Personal Data:</strong> Email address (voluntarily provided via our "Join the Network" terminal).</span></li>
+                <li><span><strong>Technical Data:</strong> IP address, browser type, and timestamp (processed automatically by our infrastructure providers for security and anti-spam purposes).</span></li>
+            </ul>
+
+            <h2>3. PURPOSE OF PROCESSING</h2>
+            <p>We process your data for specific, legitimate purposes based on your consent:</p>
+            <ul>
+                <li><span><strong>Waitlist Management:</strong> To secure your spot in the queue and notify you when the Agentrax infrastructure becomes available for Beta testing.</span></li>
+                <li><span><strong>Strategic Communications & Newsletter:</strong> To send relevant, developer-focused updates regarding the Agentrax ecosystem, release notes, technical insights, and roadmap expansions.</span></li>
+            </ul>
+            <p><strong>Legal Basis:</strong> Processing is based on your explicit consent (GDPR Art. 6.1.a) given when submitting the form.</p>
+
+            <h2>4. THIRD-PARTY INFRASTRUCTURE</h2>
+            <p>We utilize robust third-party services to handle data transmission securely. We do not host your data on vulnerable local servers.</p>
+            <ul>
+                <li><span><strong>Formspree:</strong> Used as our backend form processor. By submitting your email, you acknowledge that the information will be transferred to Formspree in accordance with their <a href="https://formspree.io/legal/privacy-policy" target="_blank">Privacy Policy</a>.</span></li>
+                <li><span><strong>Hosting Providers:</strong> GitHub Pages / Vercel (for static site delivery).</span></li>
+            </ul>
+
+            <h2>5. DATA RETENTION</h2>
+            <p>Your data is retained only as long as necessary to fulfill the purposes outlined above (i.e., until the project launch or until you unsubscribe). If you withdraw consent, your data is purged from our active mailing lists immediately.</p>
+
+            <h2>6. YOUR RIGHTS (GDPR)</h2>
+            <p>You maintain full sovereignty over your data. You have the right to:</p>
+            <ul>
+                <li><span><strong>Access:</strong> Request a copy of the data we hold about you.</span></li>
+                <li><span><strong>Rectification:</strong> Correct any inaccurate data.</span></li>
+                <li><span><strong>Erasure ("Right to be Forgotten"):</strong> Request complete deletion of your data from our records.</span></li>
+                <li><span><strong>Withdraw Consent:</strong> Unsubscribe from our communications at any time by contacting us or using the unsubscribe link in future emails.</span></li>
+            </ul>
+
+            <h2>7. SECURITY</h2>
+            <p>We implement standard industry security measures to protect your data against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure.</p>
+
+        </div>
+
+        <footer class="mt-16 pt-8 border-t border-ax-dim text-center">
+            <p class="text-xs font-mono text-neutral-600">END OF FILE.</p>
+        </footer>
+    </main>
+
+    <script>
+        const mCanvas = document.getElementById('matrix-canvas'); const mCtx = mCanvas.getContext('2d');
+        const cCanvas = document.getElementById('circuit-canvas'); const cCtx = cCanvas.getContext('2d');
+        let w, h, mCols = [], circuits = []; const mSize = 16;
+        function resize() { w = window.innerWidth; h = window.innerHeight; mCanvas.width = cCanvas.width = w; mCanvas.height = cCanvas.height = h; mCols = Array(Math.floor(w / mSize)).fill(1); }
+        window.addEventListener('resize', resize); resize();
+        function animate() {
+            mCtx.fillStyle = 'rgba(5, 5, 5, 0.1)'; mCtx.fillRect(0, 0, w, h); mCtx.font = '14px monospace';
+            mCols.forEach((y, i) => { const char = "01XY"[Math.floor(Math.random()*4)]; mCtx.fillStyle = (Math.random()>0.95)?'#FF4F00':'#333'; mCtx.fillText(char, i*mSize, y*mSize); if(y*mSize>h && Math.random()>0.98) mCols[i]=0; mCols[i]++; });
+            cCtx.clearRect(0, 0, w, h);
+            if(Math.random()>0.96) circuits.push({x:Math.random()*w, y:Math.random()*h, r:0, a:0.5});
+            circuits.forEach((c, i) => { cCtx.beginPath(); cCtx.arc(c.x, c.y, c.r, 0, Math.PI*2); cCtx.strokeStyle=`rgba(255,79,0,${c.a})`; cCtx.lineWidth=2; cCtx.stroke(); c.r+=1; c.a-=0.01; if(c.a<=0) circuits.splice(i, 1); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
