@@ -3,40 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENTRAX | AI Agent Resilience</title>
+    <title>AGENTRAX | AI Agent Resilience</title> 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ/cnF0pYgsXWl8rF4sXlS+S/7+r/9v4k+z+Xg" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Space Grotesk', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'], // Il font della mail
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         ax: {
-                            bg: '#0a0a0a',        // Nero quasi assoluto
-                            surface: '#111111',   // Grigio scuro per card
-                            primary: '#FF4F00',   // ARANCIONE ELETTRICO (Agentrax Orange)
-                            text: '#E0E0E0',      // Bianco sporco per leggibilità
-                            dim: '#444444'        // Grigio per linee
+                            bg: '#0a0a0a',
+                            surface: '#111111',
+                            primary: '#FF4F00',
+                            text: '#E0E0E0',
+                            dim: '#444444'
                         }
                     },
                     animation: {
                         'scan': 'scan 4s linear infinite',
-                        'trail-anim': 'trail-anim 2s linear infinite' 
                     },
                     keyframes: {
                         scan: {
                             '0%': { transform: 'translateY(-100%)' },
                             '100%': { transform: 'translateY(100%)' }
-                        },
-                        'trail-anim': {
-                            '0%': { transform: 'scaleX(0)' },
-                            '50%': { transform: 'scaleX(1)' },
-                            '100%': { transform: 'scaleX(0)' }
                         }
                     }
                 }
@@ -44,395 +40,362 @@
         }
     </script>
     <style>
-        body { background-color: #0a0a0a; color: #E0E0E0; overflow-x: hidden; }
+        body { 
+            background-color: #0a0a0a; 
+            color: #E0E0E0; 
+            overflow-x: hidden; 
+            min-height: 200vh; /* Per lo scorrimento */
+        }
+        
+        /* --- BACKGROUND LAYERS --- */
+        
+        /* 1. Matrix Code Rain (Sfondo profondo) */
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -4; opacity: 0.15; pointer-events: none;
+        }
 
-        /* EFFETTI SFONDO (FIXED) */
+        /* 2. Griglia Industriale */
         .grid-bg {
             background-size: 40px 40px;
             background-image:
                 linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -3; pointer-events: none;
         }
 
+        /* 3. Scanline */
         .scanline {
-            width: 100%;
-            height: 2px;
+            width: 100%; height: 2px;
             background: rgba(255, 79, 0, 0.1);
+            position: fixed; z-index: -2;
+            animation: scan 6s linear infinite; opacity: 0.3; pointer-events: none;
+        }
+
+        /* 4. Circuit Canvas (Interattivo al click) */
+        #circuit-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; 
+        }
+        
+        /* --- UI ELEMENTS --- */
+        .input-field:focus { box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3); }
+        #submit-button:disabled { background-color: #444444; cursor: not-allowed; color: #111111; opacity: 0.7; }
+        .social-icon { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #E0E0E0; transition: color 0.2s; }
+        .social-icon:hover { color: #FF4F00; }
+
+        /* --- PYRAMID LOADER (Bottom Left) --- */
+        .cube-loader {
             position: fixed;
-            z-index: 0;
-            animation: scan 6s linear infinite;
-            opacity: 0.3;
+            bottom: 40px;
+            left: 40px;
+            width: 80px;
+            height: 80px;
+            z-index: 100;
+            perspective: 1000px;
         }
-        
-        /* Contenitore Responsivo per Video (16:9 aspect ratio) */
-        .video-responsive {
+
+        .cube-wrapper {
             position: relative;
-            overflow: hidden;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            border: 2px solid #FF4F00; 
-            box-shadow: 0 0 20px rgba(255, 79, 0, 0.5); 
-        }
-        .video-responsive iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            transform-style: preserve-3d;
+            animation: spinPyramid 8s linear infinite;
         }
 
-        /* -------------------------------------- */
-        /* STILE LOGO (Uiverse.io) */
-        /* -------------------------------------- */
-        .uiverse-logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 150px; 
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .uiverse-logo-card {
-            background: none; 
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transform: scale(3.5); 
-        }
-
-        .uiverse-logo-card .border {
+        /* Facce della piramide */
+        .cube-span {
             position: absolute;
             width: 100%;
             height: 100%;
-            border-radius: 5px;
-            transform: scale(1.1);
-            transition: all 0.3s ease-in-out;
-            opacity: 0;
-        }
-        
-        .uiverse-logo-card .content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-        }
-        
-        .uiverse-logo-card .logo {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
+            /* Immagine del logo su ogni faccia */
+            background-image: url('Progetto_senza_titolo-removebg-preview.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Clip path per fare i triangoli */
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            /* Un po' di opacità e bordo */
+            opacity: 0.9;
+            border-bottom: 2px solid #FF4F00;
+            transform-origin: bottom center;
         }
 
-        .uiverse-logo-card .logo svg {
-            fill: #E0E0E0; 
-            transition: all 0.3s ease-in-out;
-        }
+        /* Posizionamento facce per formare la piramide */
+        .cube-span:nth-child(1) { transform: translateZ(35px) rotateX(30deg); }
+        .cube-span:nth-child(2) { transform: rotateY(90deg) translateZ(35px) rotateX(30deg); }
+        .cube-span:nth-child(3) { transform: rotateY(180deg) translateZ(35px) rotateX(30deg); }
+        .cube-span:nth-child(4) { transform: rotateY(270deg) translateZ(35px) rotateX(30deg); }
 
-        .uiverse-logo-card #logo-main {
-            height: 25px;
-            width: 25px;
-            margin-right: -2px; 
-            margin-top: -1px;
-            fill: #E0E0E0; 
-        }
-
-        .uiverse-logo-card #logo-second {
-            height: 20px;
-            width: 60px;
-            margin-left: 0; 
-            fill: #FF4F00; 
-        }
-
-        /* Animazione Trail sotto il logo */
-        .uiverse-logo-card .trail {
+        /* Scritta rotante sotto */
+        .loader-text {
             position: absolute;
-            bottom: -5px;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #FF4F00, transparent);
-            transform-origin: center;
-            animation: trail-anim 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-        
-        /* RIMOZIONE TESTI LOGO (per pulizia) */
-        .logo-bottom-text, .bottom-text { display: none !important; }
-
-        /* -------------------------------------- */
-        /* STILE INPUT PIXEL (Uiverse.io) */
-        /* -------------------------------------- */
-        .uiverse-pixel-input-wrapper {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-bottom: 0px;
-        }
-
-        .uiverse-pixel-label {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: bold;
+            font-size: 10px;
+            letter-spacing: 2px;
             color: #FF4F00;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            margin-bottom: 0.25rem;
-            text-align: left;
-            padding-left: 0.25rem;
+            white-space: nowrap;
+            animation: textPulse 2s infinite ease-in-out;
         }
 
-        .uiverse-pixel-input {
-            --pixel-size: 2px;
-            --pixel-color: #FF4F00;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            color: #E0E0E0;
-            background: #0a0a0a;
-            border: 0;
-            padding: 0.75rem;
-            outline: none;
-            box-shadow: 
-                0 var(--pixel-size) 0 var(--pixel-color),
-                0 calc(-1 * var(--pixel-size)) 0 var(--pixel-color),
-                var(--pixel-size) 0 0 var(--pixel-color),
-                calc(-1 * var(--pixel-size)) 0 0 var(--pixel-color),
-                var(--pixel-size) var(--pixel-size) 0 var(--pixel-color),
-                calc(-1 * var(--pixel-size)) calc(-1 * var(--pixel-size)) 0 var(--pixel-color),
-                var(--pixel-size) calc(-1 * var(--pixel-size)) 0 var(--pixel-color),
-                calc(-1 * var(--pixel-size)) var(--pixel-size) 0 var(--pixel-color);
-            transition: all 0.1s;
+        /* Animazioni Piramide */
+        @keyframes spinPyramid {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; text-shadow: 0 0 10px #FF4F00; }
         }
 
-        .uiverse-pixel-input:focus {
-            --pixel-color: #E0E0E0; /* Cambia colore al focus */
-        }
-        
-        /* -------------------------------------- */
-        /* STILE BOTTONI SOCIAL (Uiverse.io) */
-        /* -------------------------------------- */
-        .social-button-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 50;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-cssbuttons {
-            position: relative;
-            background: none;
-            border: 1px solid #FF4F00;
-            border-radius: 4px;
-            color: #E0E0E0;
-            cursor: pointer;
-            overflow: hidden;
-            padding: 8px 12px;
-            font-size: 14px;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-        
-        .btn-cssbuttons:hover {
-            box-shadow: 0 0 10px rgba(255, 79, 0, 0.5);
-            background-color: rgba(255, 79, 0, 0.1);
-        }
-
-        .btn-cssbuttons span {
-            display: flex;
-            align-items: center;
-        }
-        
-        .btn-cssbuttons .icon {
-            margin-left: 0.5rem;
-            fill: #FF4F00;
-        }
-        
     </style>
 </head>
-<body class="w-full relative flex flex-col items-center selection:bg-ax-primary selection:text-black">
+<body class="w-full relative selection:bg-ax-primary selection:text-black">
 
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="circuit-canvas"></canvas>
     <div class="grid-bg"></div>
     <div class="scanline"></div>
 
-    <div class="social-button-container">
-        
-        <a href="#github-link" class="btn-cssbuttons group">
-            <span class="text-ax-primary group-hover:text-white transition-colors duration-300">GitHub</span>
-            <span>
-                <svg height="18" width="18" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" class="icon fill-ax-primary group-hover:fill-white transition-colors duration-300">
-                    <path d="M950.930286 512q0 143.433143-83.748571 257.974857t-216.283429 158.573714q-15.433143 2.852571-22.601143-4.022857t-7.168-17.115429l0-120.539429q0-55.442286-29.696-81.115429 32.548571-3.437714 58.587429-10.313143t53.686857-22.308571 46.299429-38.034286 30.281143-59.977143 11.702857-86.016q0-69.12-45.129143-117.686857 21.138286-52.004571-4.534857-116.589714-16.018286-5.12-46.299429 6.290286t-52.589714 25.161143l-21.723429 13.677714q-53.174857-14.848-109.714286-14.848t-109.714286 14.848q-9.142857-6.290286-24.283429-15.433143t-47.689143-22.016-49.152-7.68q-25.161143 64.585143-4.022857 116.589714-45.129143 48.566857-45.129143 117.686857 0 48.566857 11.702857 85.723429t29.988571 59.977143 46.006857 38.253714 53.686857 22.308571 58.587429 10.313143q-22.820571 20.553143-28.013714 58.88-11.995429 5.705143-25.746286 8.557714t-32.548571 2.852571-37.449143-12.288-31.744-35.693714q-10.825143-18.285714-27.721143-29.696t-28.306286-13.677714l-11.410286-1.682286q-11.995429 0-16.603429 2.56t-2.852571 6.582857 5.12 7.972571 7.460571 6.875429l4.022857 2.852571q12.580571 5.705143 24.868571 21.723429t17.993143 29.110857l5.705143 13.165714q7.460571 21.723429 25.161143 35.108571t38.253714 17.115429 39.716571 4.022857 31.744-1.974857l13.165714-2.267429q0 21.723429 0.292571 50.834286t0.292571 30.866286q0 10.313143-7.460571 17.115429t-22.820571 4.022857q-132.534857-44.032-216.283429-158.573714t-83.748571-257.974857q0-119.442286 58.88-220.306286t159.744-159.744 220.306286-58.88 220.306286 58.88 159.744 159.744 58.88 220.306286z"></path>
-                </svg>
-            </span>
-        </a>
-
-        <a href="#linkedin-link" class="btn-cssbuttons group">
-            <span class="text-ax-primary group-hover:text-white transition-colors duration-300">LinkedIn</span>
-            <span>
-                <i class="fab fa-linkedin icon text-ax-primary group-hover:text-white transition-colors duration-300" style="font-size: 18px;"></i>
-            </span>
-        </a>
-
-        <a href="#x-link" class="btn-cssbuttons group">
-            <span class="text-ax-primary group-hover:text-white transition-colors duration-300">X / Twitter</span>
-            <span>
-                <i class="fab fa-x-twitter icon text-ax-primary group-hover:text-white transition-colors duration-300" style="font-size: 18px;"></i>
-            </span>
-        </a>
+    <div class="cube-loader">
+        <div class="cube-wrapper">
+            <span style="--i:0" class="cube-span"></span>
+            <span style="--i:1" class="cube-span"></span>
+            <span style="--i:2" class="cube-span"></span>
+            <span style="--i:3" class="cube-span"></span>
+        </div>
+        <div class="loader-text">AGENTRAX</div>
     </div>
 
-
-    <main class="z-10 w-full max-w-7xl pt-16 pb-32 px-4 md:px-8">
-
-        <section id="hero" class="text-center flex flex-col items-center min-h-screen justify-center pb-20 pt-16">
-
-            <div class="uiverse-logo-container">
-                <div class="uiverse-logo-card">
-                    <div class="border"></div>
-                    <div class="content">
-                        <div class="logo">
-                            <div class="logo1">
-                                <svg viewBox="0 0 29.667 31.69" xmlns="http://www.w3.org/2000/svg" id="logo-main">
-                                    <path transform="translate(0 0)" d="M12.827,1.628A1.561,1.561,0,0,1,14.31,0h2.964a1.561,1.561,0,0,1,1.483,1.628v11.9a9.252,9.252,0,0,1-2.432,6.852q-2.432,2.409-6.963,2.409T2.4,20.452Q0,18.094,0,13.669V1.628A1.561,1.561,0,0,1,1.483,0h2.98A1.561,1.561,0,0,1,5.947,1.628V13.191a5.635,5.635,0,0,0,.85,3.451,3.153,3.153,0,0,0,2.632,1.094,3.032,3.032,0,0,0,2.582-1.076,5.836,5.836,0,0,0,.816-3.486Z" data-name="Path 6" id="Path_6"></path>
-                                    <path transform="translate(-45.91 0)" d="M75.207,20.857a1.561,1.561,0,0,1-1.483,1.628h-2.98a1.561,1.561,0,0,1-1.483-1.628V1.628A1.561,1.561,0,0,1,70.743,0h2.98a1.561,1.561,0,0,1,1.483,1.628Z" data-name="Path 7" id="Path_7"></path>
-                                    <path transform="translate(0 -51.963)" d="M0,80.018A1.561,1.561,0,0,1,1.483,78.39h26.7a1.561,1.561,0,0,1,1.483,1.628v2.006a1.561,1.561,0,0,1-1.483,1.628H1.483A1.561,1.561,0,0,1,0,82.025Z" data-name="Path 8" id="Path_8"></path>
-                                </svg>
-                            </div>
-                            <div class="logo2">
-                                <svg viewBox="0 0 101.014 23.535" xmlns="http://www.w3.org/2000/svg" id="logo-second">
-                                    <g transform="translate(-1029.734 -528.273)">
-                                        <path transform="translate(931.023 527.979)" d="M109.133,14.214l3.248-11.706A1.8,1.8,0,0,1,114.114,1.2h2.229a1.789,1.789,0,0,1,1.7,2.358L111.884,21.71a1.8,1.8,0,0,1-1.7,1.216h-3a1.8,1.8,0,0,1-1.7-1.216L99.317,3.554a1.789,1.789,0,0,1,1.7-2.358h2.229a1.8,1.8,0,0,1,1.734,1.312l3.248,11.706a.468.468,0,0,0,.9,0Z" data-name="Path 1" id="Path_1"></path>
-                                        <path transform="translate(888.72 528.773)" d="M173.783,22.535a10.77,10.77,0,0,1-7.831-2.933,10.387,10.387,0,0,1-3.021-7.813v-.562A13.067,13.067,0,0,1,164.2,5.372,9.315,9.315,0,0,1,167.81,1.4,10.176,10.176,0,0,1,173.136,0,9.105,9.105,0,0,1,180.2,2.812q2.576,2.812,2.577,7.973v.583a1.793,1.793,0,0,1-1.8,1.787H169.407a.466.466,0,0,0-.457.564,5.08,5.08,0,0,0,5.217,4.136A6.594,6.594,0,0,0,178.25,16.6a1.817,1.817,0,0,1,2.448.218l.557.62a1.771,1.771,0,0,1-.1,2.488,9.261,9.261,0,0,1-2.4,1.57,11.732,11.732,0,0,1-4.972,1.034ZM173.115,4.68A3.66,3.66,0,0,0,170.3,5.85,6.04,6.04,0,0,0,168.911,9.2h8.125V8.735a4.305,4.305,0,0,0-1.051-3,3.781,3.781,0,0,0-2.87-1.059Z" data-name="Path 2" id="Path_2"></path>
-                                        <path transform="translate(842.947 528.771)" d="M244.851,3.928a1.852,1.852,0,0,1-1.95,1.76c-.1,0-.2,0-.3,0a7.53,7.53,0,0,0-2.234.3,3.275,3.275,0,0,0-2.348,3.1V20.347a1.844,1.844,0,0,1-1.9,1.787h-2.366a1.844,1.844,0,0,1-1.9-1.787V1.751A1.391,1.391,0,0,1,233.294.4h3.043a1.4,1.4,0,0,1,1.428,1.265l.035.533a.282.282,0,0,0,.5.138A5.617,5.617,0,0,1,242.988,0h.031a1.832,1.832,0,0,1,1.864,1.813l-.032,2.114Z" data-name="Path 3" id="Path_3"></path>
-                                        <path transform="translate(814.555 528.773)" d="M287.2,16.127a1.869,1.869,0,0,0-1.061-1.677,12.11,12.11,0,0,0-3.406-1.095q-7.8-1.627-7.8-6.587a5.956,5.956,0,0,1,2.415-4.83A9.781,9.781,0,0,1,283.659,0a10.536,10.536,0,0,1,6.659,1.948,6.36,6.36,0,0,1,2.029,2.586,1.791,1.791,0,0,1-1.661,2.475h-2.291a1.754,1.754,0,0,1-1.624-1.137,2.7,2.7,0,0,0-.606-.922,3.435,3.435,0,0,0-2.526-.814,3.512,3.512,0,0,0-2.284.663,2.088,2.088,0,0,0-.808,1.687,1.786,1.786,0,0,0,.92,1.557,9.485,9.485,0,0,0,3.1,1.024,25.5,25.5,0,0,1,3.678.974q4.627,1.687,4.628,5.844a5.659,5.659,0,0,1-2.567,4.81,11.125,11.125,0,0,1-6.629,1.838,11.627,11.627,0,0,1-4.881-.974,8.173,8.173,0,0,1-3.345-2.671,6.843,6.843,0,0,1-.679-1.174,1.784,1.784,0,0,1,1.653-2.492h1.9a1.786,1.786,0,0,1,1.673,1.133,2.8,2.8,0,0,0,.925,1.237,4.587,4.587,0,0,0,2.87.824,4.251,4.251,0,0,0,2.536-.632,1.965,1.965,0,0,0,.859-1.657Z" data-name="Path 4" id="Path_4"></path>
-                                        <path transform="translate(772.607 528.773)" d="M348.648,22.535a10.77,10.77,0,0,1-7.832-2.933,10.386,10.386,0,0,1-3.021-7.813v-.562a13.067,13.067,0,0,1,1.273-5.854A9.314,9.314,0,0,1,342.676,1.4,10.174,10.174,0,0,1,348,0a9.1,9.1,0,0,1,7.063,2.812q2.576,2.812,2.577,7.973v.583a1.793,1.793,0,0,1-1.8,1.787H344.272a.467.467,0,0,0-.457.564,5.081,5.081,0,0,0,5.217,4.136,6.594,6.594,0,0,0,4.083-1.251,1.817,1.817,0,0,1,2.448.218l.557.62a1.771,1.771,0,0,1-.1,2.488,9.26,9.26,0,0,1-2.4,1.57,11.731,11.731,0,0,1-4.972,1.034ZM347.981,4.68a3.659,3.659,0,0,0-2.819,1.17A6.035,6.035,0,0,0,343.777,9.2H351.9V8.735a4.307,4.307,0,0,0-1.051-3,3.781,3.781,0,0,0-2.87-1.059Z" data-name="Path 5" id="Path_5"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                            <span class="trail"></span>
-                        </div>
-                    </div>
-                </div>
+    <header class="fixed top-0 left-0 w-full z-50 bg-ax-bg/90 backdrop-blur-sm border-b border-ax-dim">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center font-mono text-sm uppercase">
+            <div>
+                <a href="#contact" class="text-ax-text hover:text-ax-primary transition-colors duration-200 tracking-widest">
+                    :: CONTACT US
+                </a>
             </div>
-            <h1 class="text-4xl md:text-6xl font-sans font-bold text-white mb-6 uppercase tracking-tight">
-                THE AI AGENT INFRASTRUCTURE
+            <nav class="flex items-center space-x-6">
+                <a href="#" class="social-icon hover:text-ax-primary">GITHUB</a>
+                <a href="#" class="social-icon hover:text-ax-primary">LINKEDIN</a>
+                <a href="#" class="social-icon hover:text-ax-primary">YOUTUBE</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-12">
+        <div class="z-10 text-center px-6 max-w-5xl flex flex-col items-center mx-auto min-h-[70vh] justify-center">
+            
+            <div data-aos="fade-down" class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
+                <span class="w-2 h-2 bg-ax-primary mr-3"></span>
+                System Status: AWAITING DEPLOYMENT
+            </div>
+
+            <h1 data-aos="zoom-in" data-aos-delay="200" class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
+                AGEN<span class="text-ax-primary">TRAX</span>
             </h1>
 
-            <p class="text-lg md:text-2xl text-gray-400 mb-12 font-normal max-w-3xl mx-auto leading-relaxed">
-                L'infrastruttura di base per le <span class="text-white font-bold">Flotte di Agenti Autonomi</span>.
+            <p data-aos="fade-up" data-aos-delay="300" class="text-lg md:text-2xl text-gray-400 mb-8 font-normal max-w-3xl mx-auto leading-relaxed">
+                The **infrastructure layer** to transform single, fragile AI agents into **resilient, efficient, and strategically optimized fleets**.
+            </p>
+
+            <p data-aos="fade-up" data-aos-delay="400" class="font-mono text-base md:text-xl text-ax-primary mb-12 max-w-3xl mx-auto block">
+                **// AGENTRAX ENGINE:** Collective Resilience <span class="mx-3 text-ax-dim">|</span> 
+                **// MEMORY OPTIMIZER:** Cost & Context Efficiency
                 <br>
-                <span class="font-mono text-sm md:text-base text-ax-primary mt-2 block">Monitor. Ottimizza. Scala.</span>
-            </p>
-            
-            <a href="#features" class="px-8 py-3 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200">
-                SCOPRI LA PIATTAFORMA >
-            </a>
-        </section>
-
-        <section id="video" class="py-16 text-center border-t border-b border-ax-dim/50">
-            <h2 class="text-3xl font-mono text-ax-primary mb-4 uppercase tracking-wider">
-                :: MISSION DEBRIEF ::
-            </h2>
-            <p class="text-neutral-400 max-w-xl mx-auto mb-8">
-                Guarda il video per capire come Agentrax ridefinisce l'orchestrazione AI e la gestione delle flotte di agenti.
-            </p>
-            <div class="w-full max-w-4xl mx-auto px-2">
-                <div class="video-responsive">
-                    <iframe 
-                        width="100%" 
-                        height="100%" 
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&modestbranding=1" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-        </section>
-        
-        <section id="features" class="py-24">
-            <h2 class="text-5xl font-bold text-center text-white mb-4 uppercase tracking-tight">
-                CORE CAPABILITIES
-            </h2>
-            <p class="text-lg text-ax-primary text-center font-mono mb-16">
-                L'INFRASTRUTTURA NECESSARIA PER L'AI AGILE.
-            </p>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                
-                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3 font-mono">01</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Orchestrazione di Flotta</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Gestisci centinaia di agenti contemporaneamente. Definisci flussi di lavoro complessi e dipendenze tra diversi LLM e strumenti utilizzando il nostro linguaggio di configurazione dichiarativo.
-                    </p>
-                </div>
-                
-                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3 font-mono">02</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Telemetria in Tempo Reale</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Dashboard di logging e monitoraggio completa e a bassa latenza. Traccia l'uso dei token, la latenza, i tassi di successo e il consumo di budget per agente in tempo reale.
-                    </p>
-                </div>
-
-                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3 font-mono">03</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Load Balancing Adattivo</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Instrada dinamicamente le richieste degli agenti all'LLM o endpoint più efficiente in base a costo, carico attuale e metriche di performance, riducendo le spese operative.
-                    </p>
-                </div>
-
-                <div class="bg-ax-surface p-6 border-t-4 border-ax-primary shadow-2xl hover:shadow-ax-primary/30 transition-shadow duration-300">
-                    <p class="text-ax-primary text-4xl mb-3 font-mono">04</p>
-                    <h3 class="text-xl font-bold mb-3 uppercase tracking-wider font-mono">Integrazione Strumenti Sicura</h3>
-                    <p class="text-neutral-400 text-sm">
-                        Permetti ai tuoi agenti di interagire con API e sistemi esterni tramite un gateway sicuro. Gestione granulare dei permessi per prevenire usi non autorizzati e garantire la compliance.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="signup" class="py-24 text-center max-w-2xl mx-auto border-t border-ax-dim/50">
-            <h2 class="text-4xl font-bold text-white mb-2 uppercase tracking-tight">
-                GET EARLY ACCESS
-            </h2>
-            <p class="text-lg text-ax-primary text-center font-mono mb-8">
-                REGISTRATI PER GLI AGGIORNAMENTI ALPHA.
+                <span class="text-sm md:text-base text-gray-400 mt-2 block">
+                    Build sophisticated agent flows. Minimize cost. Maximize reliability.
+                </span>
             </p>
 
-            <form class="flex flex-col gap-6 items-center">
-                <div class="uiverse-pixel-input-wrapper w-full max-w-md">
-                    <label class="uiverse-pixel-label" for="email">:: ENTER SECURE EMAIL</label>
-                    <input type="email" id="email" class="uiverse-pixel-input w-full" placeholder="access.token@agentrax.ai" required>
-                </div>
-
-                <div class="flex items-start max-w-md w-full mt-2 text-left">
-                    <input type="checkbox" id="terms-check" class="mr-2 mt-1 accent-ax-primary" required>
-                    <label for="terms-check" class="text-sm text-neutral-400">
-                        Acconsento al trattamento dei dati per ricevere aggiornamenti e ho letto la <a href="terms.html" class="underline text-ax-primary hover:text-white transition-colors">Termini</a> e la <a href="privacy.html" class="underline text-ax-primary hover:text-white transition-colors">Privacy Policy.</a>
+            <div data-aos="fade-up" data-aos-delay="500" id="form-content" class="w-full max-w-md mx-auto">
+                <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                    <input type="hidden" name="_subject" value="New AGENTRAX Waitlist Subscription">
+                    <input type="hidden" name="Project_Description" value="AGENTRAX: AI Agent Resilience Platform.">
+                    <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
+                        class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
+                    <button type="submit" id="submit-button" disabled
+                        class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
+                        INITIALIZE >
+                    </button>
+                </form>
+                <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
+                    <input type="checkbox" id="privacy_consent" class="mr-1 accent-ax-primary">
+                    <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
+                        I agree to the processing of data to receive updates and have read the <a href="terms.html" class="underline text-ax-primary hover:text-white">Terms</a> and the <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
                     </label>
                 </div>
+            </div>
 
-                <button type="submit" class="w-full max-w-md px-8 py-3 bg-ax-primary text-black font-bold font-mono text-base uppercase hover:bg-white transition-all duration-200 mt-4">
-                    REQUEST ACCESS
-                </button>
-            </form>
+            <div id="success-message" class="hidden w-full max-w-md p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
+                <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
+                <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
+                <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
+            </div>
+            
+            <p class="mt-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
+                COLLECTIVE RESILIENCE // CONTEXT EFFICIENCY
+            </p>
+        </div>
+
+        <section id="features" class="max-w-7xl mx-auto mt-24 px-6 pt-16 border-t border-ax-dim">
+            <h2 data-aos="fade-right" class="text-4xl font-sans font-bold text-white uppercase text-center mb-12 tracking-tight">
+                // AGENTRAX CORE FEATURES
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                <div data-aos="fade-up" data-aos-delay="100" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                    <p class="text-ax-primary font-mono text-xl mb-2">01/ RESILIENCE LOGIC</p>
+                    <p class="text-lg text-ax-text font-bold mb-3">Auto-Healing Engine</p>
+                    <p class="text-neutral-400 text-sm font-mono">Monitors global failure signals and auto-patches agents in real-time.</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                    <p class="text-ax-primary font-mono text-xl mb-2">02/ COST OPTIMIZATION</p>
+                    <p class="text-lg text-ax-text font-bold mb-3">Dynamic Memory Compression</p>
+                    <p class="text-neutral-400 text-sm font-mono">Adjusts context window sizing to cut token costs by up to 80%.</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
+                    <p class="text-ax-primary font-mono text-xl mb-2">03/ SCALABLE FLOWS</p>
+                    <p class="text-lg text-ax-text font-bold mb-3">Multi-Agent Orchestration</p>
+                    <p class="text-neutral-400 text-sm font-mono">Design, deploy, and monitor complex workflows involving multiple agents.</p>
+                </div>
+            </div>
         </section>
-
     </main>
 
-    <footer class="w-full border-t border-ax-dim/50 py-8 text-center">
-        <p class="text-sm text-neutral-500 font-mono">AGENTRAX &copy; 2024 | All Rights Reserved. | <span class="text-ax-primary">AI Infrastructure, Not AI Service.</span></p>
-    </footer>
+    <div class="w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-40">
+        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
+            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
+            <div class="space-x-4">
+                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
+                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // --- INIZIALIZZA AOS (Animazioni Scroll) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({ duration: 800, once: true, easing: 'ease-out-quad' });
+        });
+
+        // --- FORM LOGIC ---
+        const consentCheckbox = document.getElementById('privacy_consent');
+        const submitButton = document.getElementById('submit-button');
+        const form = document.getElementById('waitlist-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('success-message');
+
+        consentCheckbox.addEventListener('change', () => {
+            submitButton.disabled = !consentCheckbox.checked;
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            if (!consentCheckbox.checked) {
+                alert("NOTICE :: You must agree to the terms.");
+                return;
+            }
+            submitButton.textContent = 'TRANSMITTING...';
+            submitButton.disabled = true;
+
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(form.getAttribute('action'), {
+                    method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    formContent.classList.add('hidden');
+                    successMessage.classList.remove('hidden');
+                } else {
+                    alert('ERROR :: Submission failed.');
+                    submitButton.textContent = 'INITIALIZE >';
+                    submitButton.disabled = false;
+                }
+            } catch (error) {
+                alert('NETWORK ERROR');
+                submitButton.textContent = 'INITIALIZE >';
+                submitButton.disabled = false;
+            }
+        });
+
+        // --- CIRCUIT CANVAS (Click) ---
+        const cCanvas = document.getElementById('circuit-canvas');
+        const cCtx = cCanvas.getContext('2d');
+        let cPulses = [];
+        function resizeC() { cCanvas.width = window.innerWidth; cCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeC);
+        resizeC();
+
+        document.addEventListener('mousedown', (e) => {
+            if (!formContent.contains(e.target)) {
+                cPulses.push({ x: e.clientX, y: e.clientY, size: 0, alpha: 1, speed: 2 + Math.random() * 2 });
+            }
+        });
+
+        function drawCircuits() {
+            cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+            cPulses.forEach((p, i) => {
+                cCtx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`;
+                cCtx.lineWidth = 2;
+                cCtx.strokeRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+                cCtx.beginPath();
+                cCtx.moveTo(p.x, p.y - p.size/2); cCtx.lineTo(p.x, p.y - p.size/2 - 20);
+                cCtx.moveTo(p.x, p.y + p.size/2); cCtx.lineTo(p.x, p.y + p.size/2 + 20);
+                cCtx.moveTo(p.x - p.size/2, p.y); cCtx.lineTo(p.x - p.size/2 - 20, p.y);
+                cCtx.moveTo(p.x + p.size/2, p.y); cCtx.lineTo(p.x + p.size/2 + 20, p.y);
+                cCtx.stroke();
+                p.size += p.speed; p.alpha -= 0.02;
+                if(p.alpha <= 0) cPulses.splice(i, 1);
+            });
+            requestAnimationFrame(drawCircuits);
+        }
+        drawCircuits();
+
+        // --- MATRIX RAIN CANVAS (Sfondo Numeri) ---
+        const mCanvas = document.getElementById('matrix-canvas');
+        const mCtx = mCanvas.getContext('2d');
+        let mWidth, mHeight;
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let columns = [];
+        const fontSize = 14;
+
+        function resizeM() {
+            mWidth = mCanvas.width = window.innerWidth;
+            mHeight = mCanvas.height = window.innerHeight;
+            const cols = Math.floor(mWidth / fontSize);
+            columns = Array(cols).fill(1);
+        }
+        window.addEventListener('resize', resizeM);
+        resizeM();
+
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(10, 10, 10, 0.05)'; // Scia
+            mCtx.fillRect(0, 0, mWidth, mHeight);
+            
+            mCtx.fillStyle = '#333'; // Colore numeri scuri
+            mCtx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < columns.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                // Alcuni caratteri arancioni a caso
+                if (Math.random() > 0.98) mCtx.fillStyle = '#FF4F00';
+                else mCtx.fillStyle = '#333';
+
+                mCtx.fillText(text, i * fontSize, columns[i] * fontSize);
+
+                if(columns[i] * fontSize > mHeight && Math.random() > 0.975) {
+                    columns[i] = 0;
+                }
+                columns[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50); // Loop Matrix
+
+    </script>
 </body>
 </html>
