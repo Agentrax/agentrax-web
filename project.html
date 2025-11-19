@@ -44,13 +44,13 @@
     <style>
         body { background-color: #050505; color: #E0E0E0; overflow-x: hidden; }
         
-        /* Scrollbar */
+        
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #050505; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF4F00; }
 
-        /* Background Layers */
+        
         .canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         #matrix-canvas { z-index: -10; opacity: 0.15; }
         #circuit-canvas { z-index: -9; opacity: 0.4; }
@@ -62,12 +62,12 @@
             mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        /* Typography Utilities */
+        
         .prose-ax p { margin-bottom: 1.5rem; line-height: 1.8; font-weight: 300; color: #a3a3a3; }
         .prose-ax strong { color: white; font-weight: 700; }
         .highlight { color: #FF4F00; }
 
-        /* --- GRADUAL BLUR CSS (RICHIESTO) --- */
+        
         .gradual-blur-inner {
             position: relative;
             width: 100%;
@@ -77,7 +77,7 @@
         .gradual-blur-inner > div {
             -webkit-backdrop-filter: inherit;
             backdrop-filter: inherit;
-            position: absolute; inset: 0; /* Aggiunto per posizionamento corretto layer */
+            position: absolute; inset: 0; 
         }
 
         .gradual-blur {
@@ -92,7 +92,7 @@
             }
         }
 
-        /* --- MODIFICA QUI --- */
+        
         .gradual-blur-fixed {
             position: fixed !important;
             top: 90%;
@@ -267,4 +267,5 @@
         animate();
     </script>
 </body>
+
 </html>
