@@ -2,24 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Termini di Servizio Essenziali | Agentrax</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTRAX | Terms of Service</title> 
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>body { background-color: #0a0a0a; color: #E0E0E0; font-family: Inter, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.6; } h2 { color: #FF4F00; font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.5rem; } p { margin-bottom: 1rem; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['JetBrains Mono', 'monospace'], title: ['Space Grotesk', 'sans-serif'] },
+                    colors: { ax: { bg: '#050505', surface: '#0F0F0F', primary: '#FF4F00', dim: '#333333', text: '#E0E0E0' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #E0E0E0; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        
+        /* Backgrounds */
+        .canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #matrix-canvas { z-index: -10; opacity: 0.15; }
+        #circuit-canvas { z-index: -9; opacity: 0.4; }
+        .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -8; pointer-events: none; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle at center, black 40%, transparent 100%); }
+
+        /* Legal Typography */
+        h2 { color: white; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; border-left: 3px solid #FF4F00; padding-left: 1rem; }
+        p, li { color: #a3a3a3; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; }
+        ul { list-style-type: disc; margin-left: 1.5rem; color: #FF4F00; }
+        ul span { color: #a3a3a3; }
+        a { color: #FF4F00; text-decoration: underline; transition: color 0.2s; }
+        a:hover { color: white; }
+    </style>
 </head>
-<body>
-    <h2>Note Legali Essenziali e Proprietà Intellettuale</h2>
+<body class="p-6 md:p-12">
 
-    <p><strong>Disclaimer Beta:</strong> La Piattaforma Agentrax (incluse le funzionalità beta) è fornita "così com'è" (as-is) senza garanzie esplicite sulla sua performance o sulla completezza delle informazioni.</p>
+    <canvas id="matrix-canvas" class="canvas-layer"></canvas>
+    <canvas id="circuit-canvas" class="canvas-layer"></canvas>
+    <div class="grid-bg"></div>
 
-    <h3>1. Proprietà Intellettuale (IP)</h3>
-    <p>Il marchio Agentrax, il codice sorgente del sistema Trax Engine, la libreria ` Agentraxtor`, il formato di dato proprietario **.trax** e tutti gli algoritmi di ottimizzazione collettiva sono e rimarranno di proprietà esclusiva di Agentrax.</p>
+    <a href="index.html" class="fixed top-6 left-6 z-50 text-ax-primary hover:text-white font-mono text-sm transition-colors no-underline border border-ax-dim px-3 py-1 bg-black/50 backdrop-blur">
+        &lt; RETURN TO TERMINAL
+    </a>
 
-    <h3>2. Accordo di Utilizzo</h3>
-    <p>Accedendo al servizio Beta o alla Waitlist, l'utente riconosce che qualsiasi tentativo di decodificare, replicare o utilizzare la logica di ottimizzazione della Piattaforma a fini competitivi sarà perseguito legalmente.</p>
+    <main class="max-w-3xl mx-auto mt-24 mb-24 bg-black/40 p-8 md:p-12 border border-ax-dim backdrop-blur-sm rounded-xl">
+        
+        <h1 class="text-4xl md:text-6xl font-title font-bold text-white mb-2">TERMS OF <span class="text-ax-primary">SERVICE</span></h1>
+        <p class="font-mono text-xs text-neutral-500 mb-12 border-b border-ax-dim pb-8">LAST UPDATED: NOVEMBER 18, 2025 // STATUS: ENFORCED</p>
 
-    <div style="margin-top: 50px; border-top: 1px solid #333; padding-top: 10px;">
-        <p style="font-size: 0.8rem;">Ultimo aggiornamento: [Inserisci la Data Corrente]</p>
-    </div>
+        <div class="font-sans">
+            <p>Please read these Terms of Service ("Terms") carefully before using the AGENTRAX website or joining our network. By accessing or using the Service, you agree to be bound by these Terms.</p>
+
+            <h2>1. PRE-RELEASE AND WAITLIST STATUS</h2>
+            <p>You acknowledge that Agentrax is currently in a pre-release / development phase. By joining the waitlist:</p>
+            <ul>
+                <li><span>You are expressing interest in a product that is under active development.</span></li>
+                <li><span>Access to the Beta program is not guaranteed and is at the sole discretion of the Agentrax team.</span></li>
+                <li><span>Features described on the website are subject to change based on technical feasibility and strategic pivots.</span></li>
+            </ul>
+
+            <h2>2. INTELLECTUAL PROPERTY</h2>
+            <p>The Service and its original content (excluding content provided by users), features, and functionality are and will remain the exclusive property of Agentrax and its licensors. The Service is protected by copyright, trademark, and other laws of both domestic and foreign countries.</p>
+            <p>Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Agentrax.</p>
+
+            <h2>3. USER OBLIGATIONS</h2>
+            <p>You agree not to misuse the Service. This includes, but is not limited to:</p>
+            <ul>
+                <li><span>Attempting to reverse engineer any part of the infrastructure.</span></li>
+                <li><span>Submitting false information via our terminals.</span></li>
+                <li><span>Using the Service for any illegal or unauthorized purpose.</span></li>
+            </ul>
+
+            <h2>4. DISCLAIMER OF WARRANTIES</h2>
+            <p class="uppercase text-xs font-bold tracking-widest text-white mb-2">READ CAREFULLY:</p>
+            <p>The Service is provided on an "AS IS" and "AS AVAILABLE" basis. Agentrax makes no representations or warranties of any kind, express or implied, regarding the operation of the Service or the information, content, or materials included therein.</p>
+            <p>We do not guarantee that our resilience layer will prevent all errors, hallucinations, or crashes in your AI agents. <strong>We provide infrastructure, not magic.</strong></p>
+
+            <h2>5. LIMITATION OF LIABILITY</h2>
+            <p>In no event shall Agentrax, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
+
+            <h2>6. CHANGES TO TERMS</h2>
+            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+
+            <h2>7. CONTACT US</h2>
+            <p>If you have any questions about these Terms, please contact us at: <a href="mailto:company@agentrax.tech">company@agentrax.tech</a>.</p>
+
+        </div>
+
+        <footer class="mt-16 pt-8 border-t border-ax-dim text-center">
+            <p class="text-xs font-mono text-neutral-600">END OF FILE.</p>
+        </footer>
+    </main>
+
+    <script>
+        const mCanvas = document.getElementById('matrix-canvas'); const mCtx = mCanvas.getContext('2d');
+        const cCanvas = document.getElementById('circuit-canvas'); const cCtx = cCanvas.getContext('2d');
+        let w, h, mCols = [], circuits = []; const mSize = 16;
+        function resize() { w = window.innerWidth; h = window.innerHeight; mCanvas.width = cCanvas.width = w; mCanvas.height = cCanvas.height = h; mCols = Array(Math.floor(w / mSize)).fill(1); }
+        window.addEventListener('resize', resize); resize();
+        function animate() {
+            mCtx.fillStyle = 'rgba(5, 5, 5, 0.1)'; mCtx.fillRect(0, 0, w, h); mCtx.font = '14px monospace';
+            mCols.forEach((y, i) => { const char = "01XY"[Math.floor(Math.random()*4)]; mCtx.fillStyle = (Math.random()>0.95)?'#FF4F00':'#333'; mCtx.fillText(char, i*mSize, y*mSize); if(y*mSize>h && Math.random()>0.98) mCols[i]=0; mCols[i]++; });
+            cCtx.clearRect(0, 0, w, h);
+            if(Math.random()>0.96) circuits.push({x:Math.random()*w, y:Math.random()*h, r:0, a:0.5});
+            circuits.forEach((c, i) => { cCtx.beginPath(); cCtx.arc(c.x, c.y, c.r, 0, Math.PI*2); cCtx.strokeStyle=`rgba(255,79,0,${c.a})`; cCtx.lineWidth=2; cCtx.stroke(); c.r+=1; c.a-=0.01; if(c.a<=0) circuits.splice(i, 1); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
