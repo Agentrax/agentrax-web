@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGENTRAX | AI Agent Resilience</title> 
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
@@ -14,388 +15,489 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Space Grotesk', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['JetBrains Mono', 'monospace'], 
+                        title: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
                         ax: {
-                            bg: '#0a0a0a',
-                            surface: '#111111',
+                            bg: '#050505',
+                            surface: '#0F0F0F',
                             primary: '#FF4F00',
-                            text: '#E0E0E0',
-                            dim: '#444444'
+                            dim: '#333333',
+                            text: '#E0E0E0'
                         }
                     },
                     animation: {
-                        'scan': 'scan 4s linear infinite',
+                        'flicker': 'flicker 3s infinite alternate',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
                     },
                     keyframes: {
-                        scan: {
-                            '0%': { transform: 'translateY(-100%)' },
-                            '100%': { transform: 'translateY(100%)' }
+                        flicker: {
+                            '0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100%': { opacity: 1, textShadow: 'none' },
+                            '20%, 21.9%, 63%, 63.9%, 65%, 69.9%': { opacity: 0.4, textShadow: '0 0 10px #FF4F00' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 5px rgba(255, 79, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 20px rgba(255, 79, 0, 0.5)' }
                         }
                     }
                 }
             }
         }
     </script>
+
     <style>
-        body { 
-            background-color: #0a0a0a; 
-            color: #E0E0E0; 
-            overflow-x: hidden; 
-            min-height: 200vh; /* Per lo scorrimento */
-        }
-        
-        /* --- BACKGROUND LAYERS --- */
-        
-        /* 1. Matrix Code Rain (Sfondo profondo) */
-        #matrix-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -4; opacity: 0.15; pointer-events: none;
-        }
+        body { background-color: #050505; color: #E0E0E0; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF4F00; }
 
-        /* 2. Griglia Industriale */
-        .grid-bg {
-            background-size: 40px 40px;
-            background-image:
-                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: -3; pointer-events: none;
-        }
-
-        /* 3. Scanline */
-        .scanline {
-            width: 100%; height: 2px;
-            background: rgba(255, 79, 0, 0.1);
-            position: fixed; z-index: -2;
-            animation: scan 6s linear infinite; opacity: 0.3; pointer-events: none;
-        }
-
-        /* 4. Circuit Canvas (Interattivo al click) */
-        #circuit-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: -1; 
-        }
-        
-        /* --- UI ELEMENTS --- */
-        .input-field:focus { box-shadow: 0 0 0 2px rgba(255, 79, 0, 0.3); }
-        #submit-button:disabled { background-color: #444444; cursor: not-allowed; color: #111111; opacity: 0.7; }
-        .social-icon { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #E0E0E0; transition: color 0.2s; }
-        .social-icon:hover { color: #FF4F00; }
-
-        /* --- PYRAMID LOADER (Bottom Left) --- */
-        .cube-loader {
-            position: fixed;
-            bottom: 40px;
-            left: 40px;
-            width: 80px;
-            height: 80px;
-            z-index: 100;
-            perspective: 1000px;
-        }
-
-        .cube-wrapper {
+        section {
+            width: 100%;
             position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: spinPyramid 8s linear infinite;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 10;
+            padding: 12rem 0;
+        }
+        #intro { min-height: 90vh; padding-top: 0; }
+
+        .canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #matrix-canvas { z-index: -10; opacity: 0.15; }
+        #circuit-canvas { z-index: -9; opacity: 0.6; }
+        .grid-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -8; pointer-events: none;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        /* Facce della piramide */
-        .cube-span {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            /* Immagine del logo su ogni faccia */
-            background-image: url('Progetto_senza_titolo-removebg-preview.png'); 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Clip path per fare i triangoli */
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            /* Un po' di opacità e bordo */
-            opacity: 0.9;
-            border-bottom: 2px solid #FF4F00;
-            transform-origin: bottom center;
+        .scroll-reveal-element { opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none; }
+        .scroll-reveal-element.visible { opacity: 1; pointer-events: auto; }
+
+        .rotating-logo-container {
+            position: fixed; bottom: 35%; left: 5%; z-index: -5;
+            width: 200px; height: 200px; perspective: 1000px; pointer-events: none;
+            transform: scale(1.2); 
+        }
+        .cube-spinner { 
+            position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+            animation: spinCubeCounterClockwise 20s linear infinite;
+        }
+        @keyframes spinCubeCounterClockwise {
+            0% { transform: rotateX(15deg) rotateY(0deg); }
+            100% { transform: rotateX(15deg) rotateY(-360deg); } 
+        }
+        .cube-face {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/Agentrax/agentrax-web/d46f376359e4bb208e32e5b4ca01a3fdefe20b67/logoraw.png'); 
+            background-size: cover; background-repeat: no-repeat; background-position: center;
+            border: 1px solid rgba(255, 79, 0, 0.2); opacity: 0.85; backface-visibility: hidden; 
+        }
+        .cube-face.front  { transform: rotateY(0deg) translateZ(100px); }
+        .cube-face.back   { transform: rotateY(180deg) translateZ(100px); }
+        .cube-face.right  { transform: rotateY(90deg) translateZ(100px); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(100px); }
+        .cube-face.top    { transform: rotateX(90deg) translateZ(100px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(100px); }
+        
+        .logo-shadow {
+            position: absolute; width: 200px; height: 200px; 
+            background: radial-gradient(circle, rgba(255,79,0,0.4) 0%, transparent 70%);
+            transform: rotateX(90deg) translateZ(-150px); filter: blur(30px); left: 0; bottom: -50px; opacity: 0.6; 
         }
 
-        /* Posizionamento facce per formare la piramide */
-        .cube-span:nth-child(1) { transform: translateZ(35px) rotateX(30deg); }
-        .cube-span:nth-child(2) { transform: rotateY(90deg) translateZ(35px) rotateX(30deg); }
-        .cube-span:nth-child(3) { transform: rotateY(180deg) translateZ(35px) rotateX(30deg); }
-        .cube-span:nth-child(4) { transform: rotateY(270deg) translateZ(35px) rotateX(30deg); }
+        .logo-top-left {
+            position: fixed; top: 2rem; left: 2rem; z-index: 100; width: 80px; height: 80px; 
+            background-image: url('https://raw.githubusercontent.com/Agentrax/agentrax-web/d46f376359e4bb208e32e5b4ca01a3fdefe20b67/logoraw.png'); 
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            opacity: 0.9; transition: transform 0.3s ease-in-out;
+        }
+        .logo-top-left:hover { transform: scale(1.1); opacity: 1; }
 
-        /* Scritta rotante sotto */
-        .loader-text {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: bold;
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: #FF4F00;
-            white-space: nowrap;
-            animation: textPulse 2s infinite ease-in-out;
+        .nav-suspended { position: fixed; top: 2rem; right: 2rem; z-index: 100; }
+        .nav-box { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(10px); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+        }
+        .nav-box:hover { background-color: #FF4F00; color: #000; box-shadow: 0 0 20px rgba(255, 79, 0, 0.6); transform: scale(1.1); }
+        .nav-box:hover svg { fill: #000; stroke: #000; }
+        .nav-box::after {
+            content: attr(data-name);
+            position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            background: #000; color: #FF4F00; border: 1px solid #FF4F00;
+            padding: 4px 8px; font-size: 10px; font-family: 'JetBrains Mono', monospace;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; z-index: 101;
+        }
+        .nav-box:hover::after { opacity: 1; }
+        .nav-logo-icon {
+            width: 24px; height: 24px;
+            background-image: url('https://raw.githubusercontent.com/Agentrax/agentrax-web/d46f376359e4bb208e32e5b4ca01a3fdefe20b67/logoraw.png');
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            filter: grayscale(100%); opacity: 0.5; transition: all 0.3s;
+        }
+        .nav-box:hover .nav-logo-icon { filter: grayscale(0%); opacity: 1; }
+
+        .glitch {
+            color: #fff; white-space: nowrap; font-weight: 700; position: relative;
+            display: inline-block; user-select: none; cursor: pointer;
+        }
+        .glitch::after, .glitch::before {
+            content: attr(data-text); position: absolute; top: 0;
+            color: #fff; background-color: #050505; overflow: hidden; clip-path: inset(0 0 0 0);
+        }
+        .glitch.enable-on-hover::after, .glitch.enable-on-hover::before { content: ''; opacity: 0; animation: none; }
+        .glitch.enable-on-hover:hover::after {
+            content: attr(data-text); opacity: 1; left: 2px; text-shadow: -2px 0 red;
+            animation: animate-glitch 2s infinite linear alternate-reverse;
+        }
+        .glitch.enable-on-hover:hover::before {
+            content: attr(data-text); opacity: 1; left: -2px; text-shadow: 2px 0 cyan;
+            animation: animate-glitch 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes animate-glitch {
+            0% { clip-path: inset(20% 0 50% 0); } 20% { clip-path: inset(30% 0 40% 0); } 40% { clip-path: inset(25% 0 35% 0); } 60% { clip-path: inset(15% 0 55% 0); } 80% { clip-path: inset(20% 0 50% 0); } 100% { clip-path: inset(30% 0 40% 0); }
         }
 
-        /* Animazioni Piramide */
-        @keyframes spinPyramid {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+        .shuffle-parent { display: inline-block; white-space: normal; word-wrap: break-word; line-height: 1.2; }
+
+        .save-wrapper-fixed {
+            display: flex; flex-direction: row; justify-content: center; align-items: flex-start;
+            width: 100%; gap: 1.5rem; 
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 3rem; line-height: 1.2;
+            transform: translateX(60px);
+        }
+        @media (min-width: 768px) { .save-wrapper-fixed { font-size: 6rem; transform: translateX(100px); } }
+        
+        .save-static { color: white; white-space: nowrap; }
+        
+        .save-window { 
+            height: 1.2em; overflow: hidden; display: flex; flex-direction: column; position: relative; 
         }
         
-        @keyframes textPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; text-shadow: 0 0 10px #FF4F00; }
+        .save-list { 
+            animation: forceCycle 10s linear infinite !important; 
+            display: flex; flex-direction: column;
+        }
+        
+        .save-item { display: block; height: 1.2em; line-height: 1.2em; color: #FF4F00; white-space: nowrap; text-align: left; }
+
+        @keyframes forceCycle {
+            0%, 16%      { transform: translateY(0%); }
+            20%, 36%     { transform: translateY(-16.66%); }
+            40%, 56%     { transform: translateY(-33.33%); }
+            60%, 76%     { transform: translateY(-50%); }
+            80%, 96%     { transform: translateY(-66.66%); }
+            100%         { transform: translateY(-83.33%); }
         }
 
+        .cyber-card { 
+            background: rgba(17, 17, 17, 0.6); border: 1px solid #333; transition: all 0.3s ease; 
+            position: relative; overflow: hidden; backdrop-filter: blur(5px); 
+            display: flex; flex-direction: column; align-items: flex-start; padding: 2rem;
+        }
+        .cyber-card:hover { border-color: #FF4F00; transform: translateY(-5px); box-shadow: 0 0 20px rgba(255, 79, 0, 0.1); }
+        .cyber-card p { white-space: normal; word-wrap: break-word; width: 100%; }
+
+        .video-container {
+            position: relative; width: 100%; max-width: 800px; margin-bottom: 4rem; aspect-ratio: 16 / 9;
+            border: 1px solid #333; border-radius: 0.5rem; overflow: hidden; background: #000;
+            z-index: 20;
+        }
+        .video-container iframe { width: 100%; height: 100%; }
     </style>
 </head>
-<body class="w-full relative selection:bg-ax-primary selection:text-black">
+<body class="selection:bg-ax-primary selection:text-black antialiased">
 
-    <canvas id="matrix-canvas"></canvas>
-    <canvas id="circuit-canvas"></canvas>
+    <canvas id="matrix-canvas" class="canvas-layer"></canvas>
+    <canvas id="circuit-canvas" class="canvas-layer"></canvas>
     <div class="grid-bg"></div>
-    <div class="scanline"></div>
 
-    <div class="cube-loader">
-        <div class="cube-wrapper">
-            <span style="--i:0" class="cube-span"></span>
-            <span style="--i:1" class="cube-span"></span>
-            <span style="--i:2" class="cube-span"></span>
-            <span style="--i:3" class="cube-span"></span>
+    <a href="#" class="logo-top-left scroll-reveal-element"></a> 
+
+    <nav class="nav-suspended scroll-reveal-element">
+        <div class="grid grid-cols-2 gap-1 w-[120px]">
+            
+            <a href="project.html" class="nav-box w-[58px] h-[58px] bg-ax-surface/90 border border-ax-dim rounded-tl-[2rem] rounded-tr-md rounded-bl-md rounded-br-md flex items-center justify-center group" data-name="PROJECT INFO">
+                <div class="nav-logo-icon"></div>
+            </a>
+            
+            <a href="https://github.com/Agentrax" target="_blank" class="nav-box w-[58px] h-[58px] bg-ax-surface/90 border border-ax-dim rounded-tr-[2rem] rounded-tl-md rounded-bl-md rounded-br-md flex items-center justify-center group" data-name="GITHUB">
+                <svg class="w-5 h-5 fill-ax-text transition-colors" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            </a>
+            
+            <a href="https://reddit.com/user/AgentraxAI/" target="_blank" class="nav-box w-[58px] h-[58px] bg-ax-surface/90 border border-ax-dim rounded-bl-[2rem] rounded-tl-md rounded-tr-md rounded-br-md flex items-center justify-center group" data-name="REDDIT">
+                <svg class="w-5 h-5 fill-ax-text transition-colors" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.248 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+            </a>
+            
+            <a href="https://youtube.com/@Agentraxx" target="_blank" class="nav-box w-[58px] h-[58px] bg-ax-surface/90 border border-ax-dim rounded-br-[2rem] rounded-tl-md rounded-tr-md rounded-bl-md flex items-center justify-center group" data-name="YOUTUBE">
+                <svg class="w-5 h-5 fill-none stroke-ax-text stroke-[1.5]" viewBox="0 0 24 24"><path d="M21 7.23a2.98 2.98 0 0 0-2.16-2.16C17.06 4.5 12 4.5 12 4.5s-5.06 0-6.84.57A2.98 2.98 0 0 0 3 7.23c0 2.22 0 4.5 0 4.5s0 2.28 0 4.56a2.98 2.98 0 0 0 2.16 2.16c1.78.57 6.84.57 6.84.57s5.06 0 6.84-.57a2.98 2.98 0 0 0 2.16-2.16c0-2.28 0-4.56 0-4.56s0-2.28 0-4.5zM10.25 15.5l5.25-3.5-5.25-3.5v7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
         </div>
-        <div class="loader-text">AGENTRAX</div>
+    </nav>
+
+    <div class="rotating-logo-container scroll-reveal-element">
+        <div class="cube-spinner">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+            <div class="logo-shadow"></div>
+        </div>
     </div>
 
-    <header class="fixed top-0 left-0 w-full z-50 bg-ax-bg/90 backdrop-blur-sm border-b border-ax-dim">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center font-mono text-sm uppercase">
-            <div>
-                <a href="#contact" class="text-ax-text hover:text-ax-primary transition-colors duration-200 tracking-widest">
-                    :: CONTACT US
-                </a>
+    <section id="intro">
+        <div data-aos="fade-down" class="absolute top-[15%] inline-flex flex-col items-start bg-black border border-ax-dim p-4 rounded-lg mb-12 text-sm md:text-base w-80 md:w-96 shadow-[0_0_25px_rgba(255,79,0,0.2)]">
+            <div class="flex w-full justify-between mb-2 border-b border-ax-dim pb-1 text-ax-dim">
+                <span>STATUS</span>
+                <div class="flex gap-1"><span class="w-2 h-2 rounded-full bg-red-900"></span><span class="w-2 h-2 rounded-full bg-yellow-900"></span><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span></div>
             </div>
-            <nav class="flex items-center space-x-6">
-                <a href="#" class="social-icon hover:text-ax-primary">GITHUB</a>
-                <a href="#" class="social-icon hover:text-ax-primary">LINKEDIN</a>
-                <a href="#" class="social-icon hover:text-ax-primary">YOUTUBE</a>
-            </nav>
+            <div id="status-text" class="text-ax-primary text-left h-4 font-mono">AWAITING_DEPLOY</div>
         </div>
-    </header>
 
-    <main class="pt-24 pb-12">
-        <div class="z-10 text-center px-6 max-w-5xl flex flex-col items-center mx-auto min-h-[70vh] justify-center">
-            
-            <div data-aos="fade-down" class="mb-8 inline-flex items-center px-4 py-2 rounded-none border border-ax-dim bg-ax-surface/50 backdrop-blur-md font-mono text-xs uppercase tracking-widest text-ax-primary">
-                <span class="w-2 h-2 bg-ax-primary mr-3"></span>
-                System Status: AWAITING DEPLOYMENT
-            </div>
-
-            <h1 data-aos="zoom-in" data-aos-delay="200" class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 text-white uppercase relative">
+        <h1 class="text-center font-title font-bold tracking-tighter mt-32 md:mt-48">
+            <span class="block text-[6rem] md:text-[16rem] text-white glitch-text animate-flicker" data-text="AGENTRAX">
                 AGEN<span class="text-ax-primary">TRAX</span>
-            </h1>
+            </span>
+        </h1>
+        <p class="absolute bottom-10 text-neutral-600 text-xs animate-bounce uppercase tracking-widest">Scroll to Initialize</p>
+    </section>
 
-            <p data-aos="fade-up" data-aos-delay="300" class="text-lg md:text-2xl text-gray-400 mb-8 font-normal max-w-3xl mx-auto leading-relaxed">
-                The **infrastructure layer** to transform single, fragile AI agents into **resilient, efficient, and strategically optimized fleets**.
-            </p>
-
-            <p data-aos="fade-up" data-aos-delay="400" class="font-mono text-base md:text-xl text-ax-primary mb-12 max-w-3xl mx-auto block">
-                **// AGENTRAX ENGINE:** Collective Resilience <span class="mx-3 text-ax-dim">|</span> 
-                **// MEMORY OPTIMIZER:** Cost & Context Efficiency
-                <br>
-                <span class="text-sm md:text-base text-gray-400 mt-2 block">
-                    Build sophisticated agent flows. Minimize cost. Maximize reliability.
-                </span>
-            </p>
-
-            <div data-aos="fade-up" data-aos-delay="500" id="form-content" class="w-full max-w-md mx-auto">
-                <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col sm:flex-row gap-0 w-full border border-ax-dim hover:border-ax-primary transition-colors duration-300">
-                    <input type="hidden" name="_subject" value="New AGENTRAX Waitlist Subscription">
-                    <input type="hidden" name="Project_Description" value="AGENTRAX: AI Agent Resilience Platform.">
-                    <input type="email" name="email" placeholder="ENTER WORK EMAIL ::" required
-                        class="input-field w-full px-6 py-4 bg-black text-white font-mono text-sm placeholder-gray-600 focus:outline-none border-none">
-                    <button type="submit" id="submit-button" disabled
-                        class="px-8 py-4 bg-ax-primary text-black font-bold font-mono text-sm uppercase hover:bg-white transition-all duration-200 whitespace-nowrap">
-                        INITIALIZE >
-                    </button>
-                </form>
-                <div class="mt-4 text-center text-xs text-neutral-500 max-w-lg mx-auto">
-                    <input type="checkbox" id="privacy_consent" class="mr-1 accent-ax-primary">
-                    <label for="privacy_consent" class="text-neutral-400 font-mono text-[10px] uppercase">
-                        I agree to the processing of data to receive updates and have read the <a href="terms.html" class="underline text-ax-primary hover:text-white">Terms</a> and the <a href="privacy.html" class="underline text-ax-primary hover:text-white">Privacy Policy.</a>
-                    </label>
-                </div>
-            </div>
-
-            <div id="success-message" class="hidden w-full max-w-md p-8 border border-ax-primary bg-ax-surface/70 backdrop-blur-md rounded-none text-center">
-                <p class="text-2xl font-bold text-ax-primary mb-2">:: ACCESS GRANTED ::</p>
-                <p class="text-lg font-mono text-white">Thank you! The subscription to the newsletter was successful.</p>
-                <p class="mt-4 text-sm text-neutral-400">Your agent fleet is now queued for deployment sequence.</p>
-            </div>
+    <section class="border-t border-neutral-900/30">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center w-full">
             
-            <p class="mt-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
-                COLLECTIVE RESILIENCE // CONTEXT EFFICIENCY
+            <p class="text-xl md:text-4xl font-mono uppercase leading-relaxed max-w-6xl text-center text-neutral-400 mb-12 shuffle-parent-text" style="min-height: 120px;">
+                YOUR AGENTS ARE FRAGILE. THEY CRASH, HALLUCINATE, AND BURN CASH.<br>
+                WE PROVIDE THE <span class="text-ax-primary">INFRASTRUCTURE</span> TO MAKE THEM <span class="text-ax-primary">INVINCIBLE</span>.
             </p>
-        </div>
 
-        <section id="features" class="max-w-7xl mx-auto mt-24 px-6 pt-16 border-t border-ax-dim">
-            <h2 data-aos="fade-right" class="text-4xl font-sans font-bold text-white uppercase text-center mb-12 tracking-tight">
-                // AGENTRAX CORE FEATURES
+            <div data-aos="zoom-in" data-aos-delay="200" class="w-full mt-24 flex justify-center">
+                <div class="save-wrapper-fixed">
+                    <span class="save-static">SAVE</span>
+                    <div class="save-window">
+                        <div class="save-list">
+                            <span class="save-item">MONEY</span>
+                            <span class="save-item">TIME</span>
+                            <span class="save-item">ENERGY</span>
+                            <span class="save-item">FOCUS</span>
+                            <span class="save-item">COGNITION</span>
+                            <span class="save-item">MONEY</span> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="max-w-6xl w-full px-6">
+            <h2 class="text-3xl font-title font-bold text-white uppercase mb-16 tracking-tight text-center glitch enable-on-hover" data-text="THE ARCHITECTURE">THE ARCHITECTURE</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 w-full mb-16">
+                <div data-aos="fade-right" class="border-l-2 border-ax-primary pl-6 py-2">
+                    <span class="text-ax-primary font-mono block mb-2 text-sm opacity-80">PILLAR 01</span>
+                    <h3 class="text-2xl text-white font-bold mb-4 glitch enable-on-hover" data-text="Collective Resilience">Collective Resilience</h3>
+                    <p class="text-neutral-400 text-sm md:text-base leading-relaxed">
+                        Agents aren't isolated anymore. They learn from global failure points. One agent crashes, the entire fleet gets patched instantly.
+                    </p>
+                </div>
+                <div data-aos="fade-left" class="border-l-2 border-ax-primary pl-6 py-2">
+                    <span class="text-ax-primary font-mono block mb-2 text-sm opacity-80">PILLAR 02</span>
+                    <h3 class="text-2xl text-white font-bold mb-4 glitch enable-on-hover" data-text="Memory Optimizer">Memory Optimizer</h3>
+                    <p class="text-neutral-400 text-sm md:text-base leading-relaxed">
+                        Forget massive context windows. We dynamically inject only what's needed, slashing costs while boosting retrieval accuracy.
+                    </p>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" class="max-w-4xl mx-auto text-center bg-ax-surface/50 p-6 border border-ax-dim">
+                <p class="text-neutral-300 font-mono text-sm">
+                    OBJECTIVE: <span class="text-white font-bold">ENABLE CODELESS AGENT CREATION & FLOW ORCHESTRATION.</span>
+                </p>
+                <p class="mt-2 text-ax-primary text-xs">Integration of Pillars 01 & 02 forms the bedrock for upcoming intelligence modules.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="border-t border-neutral-900/30">
+        <div class="max-w-6xl w-full px-6">
+            <h2 class="text-3xl font-title font-bold text-white uppercase mb-16 text-center glitch enable-on-hover" data-text="CAPABILITIES">CAPABILITIES</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                <div data-aos="zoom-in" data-aos-delay="100" class="cyber-card p-8 rounded-xl glitch enable-on-hover" data-text="01/ Self-Healing">
+                    <div class="text-ax-primary text-3xl mb-4 font-mono">01</div>
+                    <h3 class="text-xl font-bold text-white mb-2 glitch enable-on-hover" data-text="Self-Healing">Self-Healing</h3>
+                    <p class="text-neutral-400 text-sm leading-relaxed">Automated recovery protocols instantly restore agent functionality upon API failures.</p>
+                </div>
+                <div data-aos="zoom-in" data-aos-delay="200" class="cyber-card p-8 rounded-xl glitch enable-on-hover" data-text="02/ Cost Control">
+                    <div class="text-ax-primary text-3xl mb-4 font-mono">02</div>
+                    <h3 class="text-xl font-bold text-white mb-2 glitch enable-on-hover" data-text="Cost Control">Cost Control</h3>
+                    <p class="text-neutral-400 text-sm leading-relaxed">Smart algorithms filter irrelevant data, maximizing token utility.</p>
+                </div>
+                <div data-aos="zoom-in" data-aos-delay="300" class="cyber-card p-8 rounded-xl glitch enable-on-hover" data-text="03/ Flow Logic">
+                    <div class="text-ax-primary text-3xl mb-4 font-mono">03</div>
+                    <h3 class="text-xl font-bold text-white mb-2 glitch enable-on-hover" data-text="Flow Logic">Flow Logic</h3>
+                    <p class="text-neutral-400 text-sm leading-relaxed">Seamless construction of complex, multi-agent dependencies and logic gates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="relative">
+        <div class="w-full max-w-2xl px-6 flex flex-col items-center justify-center z-20">
+            
+            <div class="video-container" data-aos="fade-up">
+                <iframe src="https://www.youtube.com/embed/VIDEO_ID?controls=0&modestbranding=1&rel=0" title="Agentrax Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <h2 data-aos="fade-down" class="text-4xl md:text-6xl font-title font-bold text-white text-center mb-12 glitch enable-on-hover" data-text="JOIN THE NETWORK">
+                JOIN THE <span class="text-ax-primary">NETWORK</span>
             </h2>
-            <div class="grid md:grid-cols-3 gap-8 text-left">
-                <div data-aos="fade-up" data-aos-delay="100" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
-                    <p class="text-ax-primary font-mono text-xl mb-2">01/ RESILIENCE LOGIC</p>
-                    <p class="text-lg text-ax-text font-bold mb-3">Auto-Healing Engine</p>
-                    <p class="text-neutral-400 text-sm font-mono">Monitors global failure signals and auto-patches agents in real-time.</p>
-                </div>
-                <div data-aos="fade-up" data-aos-delay="200" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
-                    <p class="text-ax-primary font-mono text-xl mb-2">02/ COST OPTIMIZATION</p>
-                    <p class="text-lg text-ax-text font-bold mb-3">Dynamic Memory Compression</p>
-                    <p class="text-neutral-400 text-sm font-mono">Adjusts context window sizing to cut token costs by up to 80%.</p>
-                </div>
-                <div data-aos="fade-up" data-aos-delay="300" class="p-6 bg-ax-surface border border-ax-dim hover:border-ax-primary transition-colors duration-300">
-                    <p class="text-ax-primary font-mono text-xl mb-2">03/ SCALABLE FLOWS</p>
-                    <p class="text-lg text-ax-text font-bold mb-3">Multi-Agent Orchestration</p>
-                    <p class="text-neutral-400 text-sm font-mono">Design, deploy, and monitor complex workflows involving multiple agents.</p>
+            
+            <div data-aos="fade-up" class="w-full relative">
+                <div class="absolute -inset-1 bg-gradient-to-r from-ax-primary to-purple-900 rounded-lg blur opacity-20 animate-pulse-glow"></div>
+                
+                <div id="form-container" class="relative bg-black border border-ax-dim p-1">
+                    <form id="waitlist-form" action="https://formspree.io/f/xrbjegrk" method="POST" class="flex flex-col md:flex-row gap-0">
+                        <input type="email" name="email" placeholder="ENTER YOUR EMAIL ::" required
+                            class="flex-1 bg-transparent text-white px-6 py-4 text-sm md:text-base outline-none placeholder-neutral-600 focus:bg-white/5 transition-colors font-mono">
+                        <button type="submit" id="submit-button" disabled
+                            class="bg-ax-primary text-black px-8 py-4 font-bold text-sm md:text-base hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400 font-mono whitespace-nowrap">
+                            INITIALIZE >
+                        </button>
+                    </form>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <div class="w-full p-4 bg-ax-bg/50 backdrop-blur-sm border-t border-neutral-900 z-40">
-        <div class="flex justify-between items-center max-w-6xl mx-auto text-[10px] font-mono uppercase text-neutral-600">
-            <p>&copy; 2025 Agentrax-AI. All IP Rights Reserved.</p>
-            <div class="space-x-4">
-                <a href="terms.html" class="hover:text-white transition-colors duration-200">TERMS OF SERVICE</a>
-                <a href="privacy.html" class="hover:text-white transition-colors duration-200">PRIVACY POLICY</a>
+            <div class="mt-6 flex items-center justify-center gap-3">
+                <input type="checkbox" id="privacy_consent" class="w-4 h-4 accent-ax-primary cursor-pointer">
+                <label for="privacy_consent" class="text-[10px] text-neutral-500 text-left cursor-pointer select-none font-mono">
+                    I AGREE TO DATA PROCESSING & <a href="#" class="text-ax-primary hover:underline">TERMS</a>. WE DO NOT SPAM.
+                </label>
+            </div>
+
+            <div id="success-message" class="hidden w-full p-8 border border-ax-primary bg-black mt-8 text-center">
+                <p class="text-ax-primary font-bold text-xl tracking-widest">:: ACCESS GRANTED ::</p>
+                <p class="text-white text-xs font-mono mt-2">Check your inbox for deployment codes.</p>
             </div>
         </div>
-    </div>
+
+        <footer class="absolute bottom-0 w-full border-t border-white/10 py-6 z-30 bg-black/80 backdrop-blur">
+            <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-neutral-600 uppercase font-mono">
+                <p>&copy; 2025 AGENTRAX INC. ALL SYSTEMS NOMINAL.</p>
+                <div class="flex gap-6 mt-2 md:mt-0">
+                    <a href="#" class="hover:text-ax-primary transition-colors">Terms</a>
+                    <a href="#" class="hover:text-ax-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-ax-primary transition-colors">Status</a>
+                </div>
+            </div>
+        </footer>
+    </section>
 
     <script>
-        // --- INIZIALIZZA AOS (Animazioni Scroll) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({ duration: 800, once: true, easing: 'ease-out-quad' });
-        });
+        AOS.init({ duration: 800, once: false, offset: 50 });
 
-        // --- FORM LOGIC ---
-        const consentCheckbox = document.getElementById('privacy_consent');
-        const submitButton = document.getElementById('submit-button');
-        const form = document.getElementById('waitlist-form');
-        const formContent = document.getElementById('form-content');
-        const successMessage = document.getElementById('success-message');
-
-        consentCheckbox.addEventListener('change', () => {
-            submitButton.disabled = !consentCheckbox.checked;
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            if (!consentCheckbox.checked) {
-                alert("NOTICE :: You must agree to the terms.");
-                return;
-            }
-            submitButton.textContent = 'TRANSMITTING...';
-            submitButton.disabled = true;
-
-            const formData = new FormData(form);
-            try {
-                const response = await fetch(form.getAttribute('action'), {
-                    method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
-                });
-                if (response.ok) {
-                    formContent.classList.add('hidden');
-                    successMessage.classList.remove('hidden');
-                } else {
-                    alert('ERROR :: Submission failed.');
-                    submitButton.textContent = 'INITIALIZE >';
-                    submitButton.disabled = false;
-                }
-            } catch (error) {
-                alert('NETWORK ERROR');
-                submitButton.textContent = 'INITIALIZE >';
-                submitButton.disabled = false;
+        window.addEventListener('scroll', () => {
+            const revealElements = document.querySelectorAll('.scroll-reveal-element');
+            if (window.scrollY > 50) {
+                revealElements.forEach(el => el.classList.add('visible'));
+            } else {
+                revealElements.forEach(el => el.classList.remove('visible'));
             }
         });
 
-        // --- CIRCUIT CANVAS (Click) ---
-        const cCanvas = document.getElementById('circuit-canvas');
-        const cCtx = cCanvas.getContext('2d');
-        let cPulses = [];
-        function resizeC() { cCanvas.width = window.innerWidth; cCanvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeC);
-        resizeC();
-
-        document.addEventListener('mousedown', (e) => {
-            if (!formContent.contains(e.target)) {
-                cPulses.push({ x: e.clientX, y: e.clientY, size: 0, alpha: 1, speed: 2 + Math.random() * 2 });
-            }
-        });
-
-        function drawCircuits() {
-            cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
-            cPulses.forEach((p, i) => {
-                cCtx.strokeStyle = `rgba(255, 79, 0, ${p.alpha})`;
-                cCtx.lineWidth = 2;
-                cCtx.strokeRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
-                cCtx.beginPath();
-                cCtx.moveTo(p.x, p.y - p.size/2); cCtx.lineTo(p.x, p.y - p.size/2 - 20);
-                cCtx.moveTo(p.x, p.y + p.size/2); cCtx.lineTo(p.x, p.y + p.size/2 + 20);
-                cCtx.moveTo(p.x - p.size/2, p.y); cCtx.lineTo(p.x - p.size/2 - 20, p.y);
-                cCtx.moveTo(p.x + p.size/2, p.y); cCtx.lineTo(p.x + p.size/2 + 20, p.y);
-                cCtx.stroke();
-                p.size += p.speed; p.alpha -= 0.02;
-                if(p.alpha <= 0) cPulses.splice(i, 1);
-            });
-            requestAnimationFrame(drawCircuits);
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+        function shuffleText(element) {
+            const originalText = element.dataset.text || element.innerText;
+            let iterations = 0;
+            const interval = setInterval(() => {
+                element.innerText = originalText.split("").map((letter, index) => {
+                    if (index < iterations) return originalText[index];
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
+                if (iterations >= originalText.length) clearInterval(interval);
+                iterations += 1; 
+            }, 10); 
         }
-        drawCircuits();
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const targets = entry.target.querySelectorAll('.shuffle-parent-text');
+                    if(targets.length > 0) targets.forEach(t => shuffleText(t));
+                    else if (entry.target.classList.contains('shuffle-parent-text')) shuffleText(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.shuffle-parent-text').forEach(el => observer.observe(el));
 
-        // --- MATRIX RAIN CANVAS (Sfondo Numeri) ---
+        const checkbox = document.getElementById('privacy_consent');
+        const btn = document.getElementById('submit-button');
+        const form = document.getElementById('waitlist-form');
+        const successMsg = document.getElementById('success-message');
+        const formContainer = document.getElementById('form-container');
+
+        checkbox.addEventListener('change', () => btn.disabled = !checkbox.checked);
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!checkbox.checked) return;
+            const originalText = btn.innerText;
+            btn.innerText = "PROCESSING...";
+            btn.disabled = true;
+            try {
+                const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: {'Accept': 'application/json'} });
+                if (res.ok) { formContainer.style.display = 'none'; successMsg.classList.remove('hidden'); } 
+                else throw new Error('Failed');
+            } catch (err) { alert('CONNECTION ERROR.'); btn.innerText = originalText; btn.disabled = false; }
+        });
+
         const mCanvas = document.getElementById('matrix-canvas');
         const mCtx = mCanvas.getContext('2d');
-        let mWidth, mHeight;
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let columns = [];
-        const fontSize = 14;
+        const cCanvas = document.getElementById('circuit-canvas');
+        const cCtx = cCanvas.getContext('2d');
+        let w, h;
+        let mCols = [];
+        const mSize = 16;
+        const mChars = "01XY";
+        let circuits = [];
 
-        function resizeM() {
-            mWidth = mCanvas.width = window.innerWidth;
-            mHeight = mCanvas.height = window.innerHeight;
-            const cols = Math.floor(mWidth / fontSize);
-            columns = Array(cols).fill(1);
+        function resize() {
+            w = window.innerWidth; h = window.innerHeight;
+            mCanvas.width = cCanvas.width = w; mCanvas.height = cCanvas.height = h;
+            mCols = Array(Math.floor(w / mSize)).fill(1);
         }
-        window.addEventListener('resize', resizeM);
-        resizeM();
+        window.addEventListener('resize', resize); resize();
+        document.addEventListener('mousedown', (e) => { circuits.push({x: e.clientX, y: e.clientY, r: 0, a: 1}); });
 
-        function drawMatrix() {
-            mCtx.fillStyle = 'rgba(10, 10, 10, 0.05)'; // Scia
-            mCtx.fillRect(0, 0, mWidth, mHeight);
-            
-            mCtx.fillStyle = '#333'; // Colore numeri scuri
-            mCtx.font = fontSize + 'px monospace';
-
-            for(let i = 0; i < columns.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                // Alcuni caratteri arancioni a caso
-                if (Math.random() > 0.98) mCtx.fillStyle = '#FF4F00';
-                else mCtx.fillStyle = '#333';
-
-                mCtx.fillText(text, i * fontSize, columns[i] * fontSize);
-
-                if(columns[i] * fontSize > mHeight && Math.random() > 0.975) {
-                    columns[i] = 0;
-                }
-                columns[i]++;
-            }
+        function animate() {
+            mCtx.fillStyle = 'rgba(5, 5, 5, 0.1)'; mCtx.fillRect(0, 0, w, h); mCtx.font = '14px monospace';
+            mCols.forEach((y, i) => {
+                const char = mChars[Math.floor(Math.random() * mChars.length)];
+                mCtx.fillStyle = (Math.random() > 0.95) ? '#FF4F00' : '#333';
+                mCtx.fillText(char, i * mSize, y * mSize);
+                if (y * mSize > h && Math.random() > 0.98) mCols[i] = 0;
+                mCols[i]++;
+            });
+            cCtx.clearRect(0, 0, w, h);
+            circuits.forEach((c, i) => {
+                cCtx.beginPath(); cCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+                cCtx.strokeStyle = `rgba(255, 79, 0, ${c.a})`; cCtx.lineWidth = 2; cCtx.stroke();
+                cCtx.beginPath(); cCtx.moveTo(c.x - c.r, c.y); cCtx.lineTo(c.x + c.r, c.y);
+                cCtx.moveTo(c.x, c.y - c.r); cCtx.lineTo(c.x, c.y + c.r);
+                cCtx.strokeStyle = `rgba(255, 79, 0, ${c.a * 0.5})`; cCtx.stroke();
+                c.r += 2; c.a -= 0.02;
+                if (c.a <= 0) circuits.splice(i, 1);
+            });
+            requestAnimationFrame(animate);
         }
-        setInterval(drawMatrix, 50); // Loop Matrix
-
+        animate();
     </script>
 </body>
 </html>
